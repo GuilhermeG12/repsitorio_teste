@@ -1,2 +1,2 @@
-print('Olá, GitHub!')
-print('Teste de publicação executado em 29/10/2026.')
+print('Esta é uma nova mensagem!')
+print('Arquivo editado pelo ChatGPT.')
