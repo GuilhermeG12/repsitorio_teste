@@ -1730,30 +1730,30 @@ const TRIG = {
         ideia:'Altura igual a −√3/2 em dois pontos; a solução é o arco de baixo entre eles.',
         c:[['sen x = −√3/2  ⟹  x = 4π/3 ou 5π/3','3º e 4º quadrantes'],['4π/3 ≤ x ≤ 5π/3','arco de baixo']],
         r:'S = { x ∈ ℝ | 4π/3 + 2kπ ≤ x ≤ 5π/3 + 2kπ, k ∈ ℤ }' },
-      { circ:{"t": "sen", "v": [[0.7071067811865476, "√2/2"], [-0.5, "−1/2"]], "arcs": [[-0.16666666666666666, 0.25, 1, 0], [0.75, 1.1666666666666667, 0, 1]], "pts": [[0.25, "π/4"], [0.75, "3π/4"], [1.1666666666666667, "7π/6"], [1.8333333333333333, "11π/6"]]}, id:'c', st:'−1/2 ≤ sen x < √2/2',
-        ideia:'A altura fica entre −1/2 (entra) e √2/2 (não entra). Sobram dois arcos, um de cada lado.',
-        c:[['sen x = √2/2  ⟹  x = π/4 ou 3π/4','não entram'],['sen x = −1/2  ⟹  x = 7π/6 ou 11π/6','entram'],['−π/6 ≤ x < π/4  ou  3π/4 < x ≤ 7π/6','arcos entre as duas alturas']],
-        r:'S = { x ∈ ℝ | −π/6 + 2kπ ≤ x < π/4 + 2kπ  ou  3π/4 + 2kπ < x ≤ 7π/6 + 2kπ, k ∈ ℤ }' },
-      { circ:{"t": "sen", "v": [[0.5, "1/2"], [-0.5, "−1/2"]], "arcs": [[-0.16666666666666666, 0.16666666666666666, 1, 1], [0.8333333333333334, 1.1666666666666667, 1, 1]], "pts": [[0.16666666666666666, "π/6"], [0.8333333333333334, "5π/6"], [1.1666666666666667, "7π/6"], [1.8333333333333333, "11π/6"]]}, id:'d', st:'|sen x| ≤ 1/2',
-        ideia:'|sen x| ≤ 1/2 é o mesmo que −1/2 ≤ sen x ≤ 1/2: duas faixas perto do eixo horizontal.',
-        c:[['−1/2 ≤ sen x ≤ 1/2','tira o módulo'],['−π/6 ≤ x ≤ π/6  ou  5π/6 ≤ x ≤ 7π/6','as duas faixas'],['as faixas se repetem a cada π','junta com kπ']],
-        r:'S = { x ∈ ℝ | −π/6 + kπ ≤ x ≤ π/6 + kπ, k ∈ ℤ }' },
+      { circ:{"t": "sen", "v": [[0.7071067811865476, "√2/2"], [-0.5, "−1/2"]], "arcs": [[0, 0.25, 1, 0], [0.75, 1.1666666666666667, 0, 1], [1.8333333333333333, 2, 1, 1]], "pts": [[0.25, "π/4"], [0.75, "3π/4"], [1.1666666666666667, "7π/6"], [1.8333333333333333, "11π/6"]]}, id:'c', st:'−1/2 ≤ sen x < √2/2',
+        ideia:'Na volta de 0 a 2π, a altura deve ser menor que √2/2 e maior ou igual a −1/2. Sobram três intervalos separados.',
+        c:[['sen x = √2/2  ⟹  x = π/4 ou 3π/4','fronteiras que não entram'],['sen x = −1/2  ⟹  x = 7π/6 ou 11π/6','fronteiras que entram'],['0 ≤ x < π/4  ou  3π/4 < x ≤ 7π/6  ou  11π/6 ≤ x ≤ 2π','três intervalos em 0 ≤ x ≤ 2π']],
+        r:'S = { x ∈ ℝ | 2kπ ≤ x < π/4 + 2kπ  ou  3π/4 + 2kπ < x ≤ 7π/6 + 2kπ  ou  11π/6 + 2kπ ≤ x ≤ 2π + 2kπ, k ∈ ℤ }' },
+      { circ:{"t": "sen", "v": [[0.5, "1/2"], [-0.5, "−1/2"]], "arcs": [[0, 0.16666666666666666, 1, 1], [0.8333333333333334, 1.1666666666666667, 1, 1], [1.8333333333333333, 2, 1, 1]], "pts": [[0.16666666666666666, "π/6"], [0.8333333333333334, "5π/6"], [1.1666666666666667, "7π/6"], [1.8333333333333333, "11π/6"]]}, id:'d', st:'|sen x| ≤ 1/2',
+        ideia:'|sen x| ≤ 1/2 é o mesmo que −1/2 ≤ sen x ≤ 1/2. Na volta de 0 a 2π, isso forma três intervalos separados.',
+        c:[['−1/2 ≤ sen x ≤ 1/2','tira o módulo'],['0 ≤ x ≤ π/6  ou  5π/6 ≤ x ≤ 7π/6  ou  11π/6 ≤ x ≤ 2π','três intervalos em 0 ≤ x ≤ 2π']],
+        r:'S = { x ∈ ℝ | 2kπ ≤ x ≤ π/6 + 2kπ  ou  5π/6 + 2kπ ≤ x ≤ 7π/6 + 2kπ  ou  11π/6 + 2kπ ≤ x ≤ 2π + 2kπ, k ∈ ℤ }' },
       { circ:{"t": "sen", "v": [[0.5, "1/2"], [0, ""]], "arcs": [[0, 0.16666666666666666, 0, 0], [0.8333333333333334, 1, 0, 0]], "pts": [[0, "0"], [0.16666666666666666, "π/6"], [0.8333333333333334, "5π/6"], [1, "π"]]}, id:'e', st:'2·sen²x < sen x',
         ideia:'Passa tudo para um lado e fatora. O produto é negativo só quando 0 < sen x < 1/2.',
         c:[['sen x · (2sen x − 1) < 0','fatora'],['0 < sen x < 1/2','entre as raízes 0 e 1/2'],['0 < x < π/6  ou  5π/6 < x < π','metade de cima, abaixo de 1/2']],
         r:'S = { x ∈ ℝ | 2kπ < x < π/6 + 2kπ  ou  5π/6 + 2kπ < x < π + 2kπ, k ∈ ℤ }' }
     ]},
     { n:2, f:'Apostila · 7.1 Exemplos', st:'Determinar o conjunto solução das inequações (x ∈ ℝ):', its:[
-      { circ:{"t": "cos", "v": [[0.8660254037844386, "√3/2"]], "arcs": [[-0.16666666666666666, 0.16666666666666666, 0, 0]], "pts": [[0.16666666666666666, "π/6"], [1.8333333333333333, "11π/6"]]}, id:'a', st:'cos x > √3/2',
+      { circ:{"t": "cos", "v": [[0.8660254037844386, "√3/2"]], "arcs": [[0, 0.16666666666666666, 1, 0], [1.8333333333333333, 2, 0, 1]], "pts": [[0.16666666666666666, "π/6"], [1.8333333333333333, "11π/6"]]}, id:'a', st:'cos x > √3/2',
         ideia:'Cosseno é a medida no eixo horizontal. cos x > √3/2 é o arco mais à direita.',
-        c:[['cos x = √3/2  ⟹  x = π/6 ou −π/6','fronteiras (não entram)'],['−π/6 < x < π/6','arco da direita']],
-        r:'S = { x ∈ ℝ | −π/6 + 2kπ < x < π/6 + 2kπ, k ∈ ℤ }' },
-      { circ:{"t": "cos", "v": [[-1, "−1"]], "arcs": [[-1, 1, 0, 0]], "pts": [[1, "π"]]}, id:'b', st:'cos x > −1',
+        c:[['cos x = √3/2  ⟹  x = π/6 ou 11π/6','fronteiras que não entram'],['0 ≤ x < π/6  ou  11π/6 < x ≤ 2π','dois intervalos na volta completa']],
+        r:'S = { x ∈ ℝ | 2kπ ≤ x < π/6 + 2kπ  ou  11π/6 + 2kπ < x ≤ 2π + 2kπ, k ∈ ℤ }' },
+      { circ:{"t": "cos", "v": [[-1, "−1"]], "arcs": [[0, 1, 1, 0], [1, 2, 0, 1]], "pts": [[1, "π"]]}, id:'b', st:'cos x > −1',
         ideia:'O cosseno nunca é menor que −1. Só não serve onde cos x = −1.',
-        c:[['cos x = −1  ⟹  x = π','único ponto que sai']],
-        r:'S = { x ∈ ℝ | x ≠ π + 2kπ, k ∈ ℤ }' }
+        c:[['cos x = −1  ⟹  x = π','único ponto que sai'],['0 ≤ x < π  ou  π < x ≤ 2π','separam-se os dois lados de π']],
+        r:'S = { x ∈ ℝ | 2kπ ≤ x < π + 2kπ  ou  π + 2kπ < x ≤ 2π + 2kπ, k ∈ ℤ }' }
     ]},
-    { n:3, f:'Apostila · 7.1 Exemplos', st:'Resolva as inequações trigonométricas considerando 0 ≤ x ≤ 2π.', its:[
+    { n:3, f:'Apostila · 7.1 Exemplos', st:'Resolva as inequações trigonométricas considerando 0 ≤ x ≤ 2π. Esta já é uma volta completa; para x ∈ ℝ, repita cada intervalo somando 2kπ.', its:[
       { circ:{"t": "tg", "v": [[1, "1"]], "arcs": [[0.25, 0.5, 0, 0], [1.25, 1.5, 0, 0]], "pts": [[0.25, "π/4"], [1.25, "5π/4"]]}, id:'a', st:'tg x > 1',
         ideia:'A tangente cresce em cada ramo e não existe em π/2 e 3π/2.',
         c:[['tg x = 1  ⟹  x = π/4 ou 5π/4','fronteiras'],['π/4 < x < π/2  ou  5π/4 < x < 3π/2','até cada assíntota']],
@@ -1851,9 +1851,13 @@ function trigList(l){
     <h1 class="wr">${E(L.t)}</h1>
     <p class="lede rv">${E(L.sub)}. Cada questão traz a ideia, os cálculos e a resposta para copiar.</p>
   </section>
+  ${l === '71' ? `<section class="rv" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:18px">
+    <h2 style="margin:0 0 8px">Material Trigonometria do círculo</h2>
+    <p class="sub" style="margin:0 0 14px">As três questões da Lista 7.1, organizadas pela convenção de resolver primeiro em 0 ≤ x ≤ 2π.</p>` : ''}
   <div class="grid">${L.qs.map(q => `<button class="qcard rv" data-tq="${q.n}" style="--dc:#ff6b5e">
     <span class="row"><span class="num">Questão ${q.n}</span>${pr[trigKey(l, q.n)] ? '<span class="pill ok">concluída ✓</span>' : '<span class="pill go">disponível</span>'}</span>
-    <span class="txt">${E(q.st)}${q.its.length > 1 ? ' ' + q.its.map(it => it.id + ')').join(' ') : ''}</span><span class="peso">${E(q.f)}</span></button>`).join('')}</div>`;
+    <span class="txt">${E(q.st)}${q.its.length > 1 ? ' ' + q.its.map(it => it.id + ')').join(' ') : ''}</span><span class="peso">${E(q.f)}</span></button>`).join('')}</div>
+  ${l === '71' ? '</section>' : ''}`;
   stagger(view);
   view.querySelectorAll('[data-tq]').forEach(b => b.onclick = () => trigQ(l, +b.dataset.tq));
   window.scrollTo(0, 0);
