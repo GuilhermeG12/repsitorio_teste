@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Atualizador de HTML · GitHub</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at top, #1e293b, #0b1020 65%); color: #e5e7eb; }
+    main { width: min(100%, 620px); padding: 30px; border: 1px solid #334155; border-radius: 22px; background: rgba(15,23,42,.94); box-shadow: 0 24px 80px #0008; }
+    .tag { display: inline-flex; padding: 6px 10px; border-radius: 999px; background: #172554; color: #bfdbfe; font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+    h1 { margin: 16px 0 8px; font-size: clamp(25px, 5vw, 34px); }
+    p { color: #aab7ca; line-height: 1.55; }
+    label { display: block; margin: 20px 0 8px; color: #dbeafe; font-weight: 650; font-size: 14px; }
+    input[type=text], input[type=file] { width: 100%; border: 1px solid #475569; border-radius: 12px; padding: 13px; background: #0b1220; color: #e5e7eb; }
+    input[type=file] { border-style: dashed; padding: 18px; }
+    button { width: 100%; margin-top: 22px; border: 0; border-radius: 12px; padding: 15px 18px; background: #2563eb; color: white; font-weight: 750; font-size: 15px; cursor: pointer; }
+    button:disabled { opacity: .55; cursor: wait; }
+    .hint { font-size: 12px; color: #94a3b8; }
+    #status { display: none; margin-top: 18px; padding: 13px; border-radius: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    #status.ok { display: block; background: #052e24; color: #bbf7d0; }
+    #status.error { display: block; background: #450a0a; color: #fecaca; }
+    .file-name { margin-top: 9px; color: #cbd5e1; font-size: 13px; }
+    footer { margin-top: 22px; border-top: 1px solid #334155; padding-top: 15px; font-size: 12px; color: #94a3b8; }
+    code { color: #bfdbfe; }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="tag">FERRAMENTA DE PUBLICAÇÃO</span>
+    <h1>Atualizar arquivo HTML</h1>
+    <p>Selecione o HTML que deseja enviar ao repositório. O servidor recebe o arquivo e realiza a atualização no GitHub.</p>
+
+    <form id="uploadForm">
+      <label for="target">Caminho do arquivo no GitHub</label>
+      <input id="target" name="target" type="text" value="Semestre_UEMA_2026_2_Cap4_e_Cap5_integrados.html" required>
+      <p class="hint">Esse é o arquivo que será substituído no repositório configurado no servidor.</p>
+
+      <label for="file">Arquivo HTML novo</label>
+      <input id="file" name="file" type="file" accept=".html,.htm,text/html" required>
+      <div class="file-name" id="fileName">Nenhum arquivo selecionado.</div>
+
+      <button id="submit" type="submit">Enviar e atualizar GitHub</button>
+    </form>
+
+    <div id="status" role="status" aria-live="polite"></div>
+    <footer>O token do GitHub deve ficar protegido no servidor Python — nunca coloque credenciais nesta página.</footer>
+  </main>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('file');
+    const fileName = document.getElementById('fileName');
+    const statusBox = document.getElementById('status');
+    const submit = document.getElementById('submit');
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      fileName.textContent = file ? file.name + ' · ' + (file.size / 1024 / 1024).toFixed(2) + ' MB' : 'Nenhum arquivo selecionado.';
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const file = fileInput.files[0];
+      if (!file) return;
+      if (!/\.html?$/i.test(file.name)) {
+        statusBox.className = 'error';
+        statusBox.textContent = 'Selecione um arquivo .html ou .htm.';
+        return;
+      }
+
+      const data = new FormData();
+      data.append('file', file);
+      data.append('target', document.getElementById('target').value.trim());
+
+      submit.disabled = true;
+      submit.textContent = 'Enviando…';
+      statusBox.className = '';
+      statusBox.style.display = 'none';
+
+      try {
+        const response = await fetch('/upload', { method: 'POST', body: data });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || result.message || ('Erro HTTP ' + response.status));
+        statusBox.className = 'ok';
+        statusBox.textContent = result.message || 'Arquivo recebido pelo servidor. Verifique o commit no GitHub.';
+      } catch (error) {
+        statusBox.className = 'error';
+        statusBox.textContent = 'Não foi possível concluir o envio. ' + error.message + '\nVerifique se o servidor Python está ativo e possui a rota POST /upload.';
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Enviar e atualizar GitHub';
+      }
+    });
+  </script>
+</body>
+</html>
