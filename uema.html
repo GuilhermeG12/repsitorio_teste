@@ -3348,7 +3348,7 @@ const TRIG = {
 // soluções sempre a partir do 0, somando k·2π; F põe as frações em pé
 const F = s => s.replace(/(\d*)π\/(\d+)/g, '[[$1π||$2]]').replace(/√(\d)\/(\d)/g, '[[√$1||$2]]').replace(/(^|[^\d√])(\d+)\/(\d+)/g, '$1[[$2||$3]]');
 const T71 = (n, lt, wst, S, circ) => ({ n, lt, f:'7.1 Exemplos · questão ' + lt.replace(/\D/g, ''), st:wst, wst:F(wst), its:[{ id:'', ideia:'' }],
-  wb:S.map(s => ['{{' + ((s.match(/  ou  /g) || []).length >= 2 ? F(s).replace(/  ou  /g, '\nou ') : F(s)) + ' }}']), circ }); // solução numa linha só (arrasta para o lado)
+  wb:S.map(s => ['{{' + F(s) + ' }}']), circ }); // solução numa linha só (arrasta para o lado)
 const K = ' + k·2π';
 TRIG['71'] = { calc:true, data:'03/11', t:'7.1 Inequações trigonométricas', sub:'círculo trigonométrico e solução', qs:[
   T71(1, '1a', 'sen x ≥ 0', ['S = { x ∈ ℝ | k·2π ≤ x ≤ π' + K + ', k ∈ ℤ }'],
