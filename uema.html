@@ -3292,19 +3292,145 @@ const TRIG = {
       r:'sen x = ±√15/4' }] }
   ]}
 };
+/* ---------- Cálculo · listas de derivadas (só resolução para o caderno) ---------- */
+const RP = 'Regra do produto:  (u·v)′ = u′·v + u·v′', RQ = 'Regra do quociente:  (u/v)′ = (u′·v − u·v′) / v²',
+  RPOT = 'Regra da potência:  (xⁿ)′ = n·xⁿ⁻¹', RK = 'Constante:  (k·u)′ = k·u′',
+  RC = 'Regra da cadeia:  [uⁿ]′ = n·uⁿ⁻¹·u′', RE = 'Regra da cadeia:  [eᵘ]′ = eᵘ·u′';
+const CD = { disc:'calc', dn:'Cálculo', cor:'#4da8ff', calc:true, prof:'Cálculo Diferencial · Prof. Sergio' };
+Object.assign(TRIG, {
+  'cd1': { ...CD, lbl:'Derivadas · produto e quociente', data:'03/11', t:'Derivadas · produto e quociente', sub:'questões 5 a 22', qs:[
+    { n:5, f:'Produto', st:'f(x) = (2x + 1)(3x² + 6)', its:[{ id:'', ideia:RP,
+      c:[['u = 2x + 1   →   u′ = 2','derivar u'],['v = 3x² + 6   →   v′ = 6x','derivar v'],
+         ["f′(x) = 2·(3x² + 6) + (2x + 1)·6x",'u′·v + u·v′'],["f′(x) = 6x² + 12 + 12x² + 6x",'distribuir'],["f′(x) = 18x² + 6x + 12",'juntar termos semelhantes']],
+      r:"f′(x) = 18x² + 6x + 12" }] },
+    { n:6, f:'Produto', st:'f(x) = (7x − 1)(x + 4)', its:[{ id:'', ideia:RP,
+      c:[['u = 7x − 1   →   u′ = 7','derivar u'],['v = x + 4   →   v′ = 1','derivar v'],
+         ["f′(x) = 7·(x + 4) + (7x − 1)·1",'u′·v + u·v′'],["f′(x) = 7x + 28 + 7x − 1",'distribuir'],["f′(x) = 14x + 27",'juntar termos semelhantes']],
+      r:"f′(x) = 14x + 27" }] },
+    { n:7, f:'Produto', st:'f(x) = (3x⁵ − 1)(2 − x⁴)', its:[{ id:'', ideia:RP,
+      c:[['u = 3x⁵ − 1   →   u′ = 15x⁴','potência: 5·3x⁴'],['v = 2 − x⁴   →   v′ = −4x³','potência: −4x³'],
+         ["f′(x) = 15x⁴·(2 − x⁴) + (3x⁵ − 1)·(−4x³)",'u′·v + u·v′'],["f′(x) = 30x⁴ − 15x⁸ − 12x⁸ + 4x³",'distribuir'],["f′(x) = −27x⁸ + 30x⁴ + 4x³",'juntar termos semelhantes']],
+      r:"f′(x) = −27x⁸ + 30x⁴ + 4x³" }] },
+    { n:8, f:'Constante e quociente', st:'f(x) = (2/3)(5x − 3)⁻¹(5x + 3)', its:[{ id:'', ideia:RK + '   e   ' + RQ,
+      c:[['f(x) = (2/3) · (5x + 3)/(5x − 3)','(5x − 3)⁻¹ = 1/(5x − 3)'],['u = 5x + 3  →  u′ = 5 ;   v = 5x − 3  →  v′ = 5','derivar u e v'],
+         ["f′(x) = (2/3) · [5(5x − 3) − (5x + 3)·5] / (5x − 3)²",'(u′v − uv′)/v²'],["f′(x) = (2/3) · (25x − 15 − 25x − 15) / (5x − 3)²",'distribuir'],
+         ["f′(x) = (2/3) · (−30) / (5x − 3)²",'25x − 25x = 0'],["f′(x) = −20 / (5x − 3)²",'(2/3)·(−30) = −20']],
+      r:"f′(x) = −20 / (5x − 3)²" }] },
+    { n:9, f:'Produto', st:'f(x) = (x − 1)(x + 1)', its:[{ id:'', ideia:RP,
+      c:[['u = x − 1  →  u′ = 1 ;   v = x + 1  →  v′ = 1','derivar u e v'],["f′(x) = 1·(x + 1) + (x − 1)·1",'u′·v + u·v′'],["f′(x) = x + 1 + x − 1",'tirar parênteses'],["f′(x) = 2x",'1 − 1 = 0']],
+      r:"f′(x) = 2x" }] },
+    { n:10, f:'Produto de três', st:'f(s) = (s² − 1)(3s − 1)(5s³ + 2s)', its:[{ id:'', ideia:'Produto de três:  (u·v·w)′ = u′·v·w + u·v′·w + u·v·w′',
+      c:[['u = s² − 1  →  u′ = 2s','derivar u'],['v = 3s − 1  →  v′ = 3','derivar v'],['w = 5s³ + 2s  →  w′ = 15s² + 2','derivar w'],
+         ["f′(s) = 2s(3s − 1)(5s³ + 2s) + 3(s² − 1)(5s³ + 2s) + (s² − 1)(3s − 1)(15s² + 2)",'u′vw + uv′w + uvw′'],
+         ['2s(3s − 1)(5s³ + 2s) = 30s⁵ − 10s⁴ + 12s³ − 4s²','1º termo'],['3(s² − 1)(5s³ + 2s) = 15s⁵ − 9s³ − 6s','2º termo'],
+         ['(s² − 1)(3s − 1)(15s² + 2) = 45s⁵ − 15s⁴ − 39s³ + 13s² − 6s + 2','3º termo'],
+         ["f′(s) = 90s⁵ − 25s⁴ − 36s³ + 9s² − 12s + 2",'somar os três']],
+      r:"f′(s) = 90s⁵ − 25s⁴ − 36s³ + 9s² − 12s + 2" }] },
+    { n:11, f:'Constante', st:'f(x) = 7(ax² + bx + c)', its:[{ id:'', ideia:RK + '   e   ' + RPOT,
+      c:[["f′(x) = 7·(ax² + bx + c)′",'a constante 7 sai'],["f′(x) = 7·(2ax + b)",'a, b, c são constantes'],["f′(x) = 14ax + 7b",'distribuir']],
+      r:"f′(x) = 14ax + 7b" }] },
+    { n:12, f:'Produto', st:'f(u) = (4u² − a)(a − 2u)', its:[{ id:'', ideia:RP + '   (a variável é u; a é constante)',
+      c:[['p = 4u² − a  →  p′ = 8u','derivar o 1º fator'],['q = a − 2u  →  q′ = −2','derivar o 2º fator'],
+         ["f′(u) = 8u·(a − 2u) + (4u² − a)·(−2)",'p′·q + p·q′'],["f′(u) = 8au − 16u² − 8u² + 2a",'distribuir'],["f′(u) = −24u² + 8au + 2a",'juntar termos semelhantes']],
+      r:"f′(u) = −24u² + 8au + 2a" }] },
+    { n:13, f:'Quociente', st:'f(x) = (2x + 4) / (3x − 1)', its:[{ id:'', ideia:RQ,
+      c:[['u = 2x + 4  →  u′ = 2 ;   v = 3x − 1  →  v′ = 3','derivar u e v'],["f′(x) = [2(3x − 1) − (2x + 4)·3] / (3x − 1)²",'(u′v − uv′)/v²'],
+         ["f′(x) = (6x − 2 − 6x − 12) / (3x − 1)²",'distribuir'],["f′(x) = −14 / (3x − 1)²",'6x − 6x = 0']],
+      r:"f′(x) = −14 / (3x − 1)²" }] },
+    { n:14, f:'Quociente', st:'f(t) = (t − 1) / (t + 1)', its:[{ id:'', ideia:RQ,
+      c:[['u = t − 1  →  u′ = 1 ;   v = t + 1  →  v′ = 1','derivar u e v'],["f′(t) = [1·(t + 1) − (t − 1)·1] / (t + 1)²",'(u′v − uv′)/v²'],
+         ["f′(t) = (t + 1 − t + 1) / (t + 1)²",'tirar parênteses (troca o sinal)'],["f′(t) = 2 / (t + 1)²",'t − t = 0']],
+      r:"f′(t) = 2 / (t + 1)²" }] },
+    { n:15, f:'Quociente', st:'f(t) = (3t² + 5t − 1) / (t − 1)', its:[{ id:'', ideia:RQ,
+      c:[['u = 3t² + 5t − 1  →  u′ = 6t + 5 ;   v = t − 1  →  v′ = 1','derivar u e v'],["f′(t) = [(6t + 5)(t − 1) − (3t² + 5t − 1)·1] / (t − 1)²",'(u′v − uv′)/v²'],
+         ['(6t + 5)(t − 1) = 6t² − t − 5','distribuir'],["f′(t) = (6t² − t − 5 − 3t² − 5t + 1) / (t − 1)²",'tirar parênteses (troca o sinal)'],["f′(t) = (3t² − 6t − 4) / (t − 1)²",'juntar termos semelhantes']],
+      r:"f′(t) = (3t² − 6t − 4) / (t − 1)²" }] },
+    { n:16, f:'Quociente', st:'f(t) = (2 − t²) / (t − 2)', its:[{ id:'', ideia:RQ,
+      c:[['u = 2 − t²  →  u′ = −2t ;   v = t − 2  →  v′ = 1','derivar u e v'],["f′(t) = [−2t(t − 2) − (2 − t²)·1] / (t − 2)²",'(u′v − uv′)/v²'],
+         ["f′(t) = (−2t² + 4t − 2 + t²) / (t − 2)²",'distribuir'],["f′(t) = (−t² + 4t − 2) / (t − 2)²",'−2t² + t² = −t²']],
+      r:"f′(t) = (−t² + 4t − 2) / (t − 2)²" }] },
+    { n:17, f:'Quociente', st:'f(x) = (4 − x) / (5 − x²)', its:[{ id:'', ideia:RQ,
+      c:[['u = 4 − x  →  u′ = −1 ;   v = 5 − x²  →  v′ = −2x','derivar u e v'],["f′(x) = [−1·(5 − x²) − (4 − x)(−2x)] / (5 − x²)²",'(u′v − uv′)/v²'],
+         ["f′(x) = (−5 + x² + 8x − 2x²) / (5 − x²)²",'distribuir'],["f′(x) = (−x² + 8x − 5) / (5 − x²)²",'x² − 2x² = −x²']],
+      r:"f′(x) = (−x² + 8x − 5) / (5 − x²)²" }] },
+    { n:18, f:'Quociente', st:'f(x) = (5x + 7) / (2x − 2)', its:[{ id:'', ideia:RQ,
+      c:[['u = 5x + 7  →  u′ = 5 ;   v = 2x − 2  →  v′ = 2','derivar u e v'],["f′(x) = [5(2x − 2) − (5x + 7)·2] / (2x − 2)²",'(u′v − uv′)/v²'],
+         ["f′(x) = (10x − 10 − 10x − 14) / (2x − 2)²",'distribuir'],["f′(x) = −24 / (2x − 2)²",'10x − 10x = 0'],
+         ["f′(x) = −24 / [4(x − 1)²] = −6 / (x − 1)²",'(2x − 2)² = 4(x − 1)²']],
+      r:"f′(x) = −6 / (x − 1)²" }] },
+    { n:19, f:'Simplificar e derivar', st:'f(x) = [(x + 1)/(x + 2)]·(3x² + 6x)', its:[{ id:'', ideia:'Simplificar antes de derivar   e   ' + RPOT,
+      c:[['3x² + 6x = 3x(x + 2)','pôr 3x em evidência'],['f(x) = [(x + 1)/(x + 2)]·3x(x + 2)','substituir'],['f(x) = 3x(x + 1) = 3x² + 3x ,   x ≠ −2','cancelar (x + 2)'],
+         ["f′(x) = 6x + 3",'potência em cada termo']],
+      r:"f′(x) = 6x + 3   (x ≠ −2)" }] },
+    { n:20, f:'Quociente', st:'f(t) = (t − a)² / (t − b)', its:[{ id:'', ideia:RQ + '   (a e b são constantes)',
+      c:[['u = (t − a)²  →  u′ = 2(t − a) ;   v = t − b  →  v′ = 1','derivar u e v'],["f′(t) = [2(t − a)(t − b) − (t − a)²·1] / (t − b)²",'(u′v − uv′)/v²'],
+         ["f′(t) = (t − a)[2(t − b) − (t − a)] / (t − b)²",'pôr (t − a) em evidência'],["f′(t) = (t − a)(t + a − 2b) / (t − b)²",'2t − 2b − t + a']],
+      r:"f′(t) = (t − a)(t + a − 2b) / (t − b)²" }] },
+    { n:21, f:'Potência negativa', st:'f(x) = 3/x⁴ + 5/x⁵', its:[{ id:'', ideia:RPOT + '   (vale para n negativo)',
+      c:[['f(x) = 3x⁻⁴ + 5x⁻⁵','1/xⁿ = x⁻ⁿ'],["f′(x) = 3·(−4)x⁻⁵ + 5·(−5)x⁻⁶",'n·xⁿ⁻¹'],["f′(x) = −12x⁻⁵ − 25x⁻⁶",'multiplicar'],["f′(x) = −12/x⁵ − 25/x⁶",'voltar para fração']],
+      r:"f′(x) = −12/x⁵ − 25/x⁶" }] },
+    { n:22, f:'Potência negativa', st:'f(x) = (1/2)x⁴ + 2/x⁶', its:[{ id:'', ideia:RPOT + '   (vale para n negativo)',
+      c:[['f(x) = (1/2)x⁴ + 2x⁻⁶','1/xⁿ = x⁻ⁿ'],["f′(x) = (1/2)·4x³ + 2·(−6)x⁻⁷",'n·xⁿ⁻¹'],["f′(x) = 2x³ − 12x⁻⁷",'multiplicar'],["f′(x) = 2x³ − 12/x⁷",'voltar para fração']],
+      r:"f′(x) = 2x³ − 12/x⁷" }] }
+  ]},
+  'cd2': { ...CD, lbl:'Derivadas · regra da cadeia', data:'03/11', t:'Derivadas · regra da cadeia', sub:'questões 5 a 12', qs:[
+    { n:5, f:'Cadeia', st:'f(x) = 10(3x² + 7x − 3)¹⁰', its:[{ id:'', ideia:RC,
+      c:[['u = 3x² + 7x − 3  →  u′ = 6x + 7','derivar o de dentro'],["f′(x) = 10·10(3x² + 7x − 3)⁹·(6x + 7)",'n·uⁿ⁻¹·u′'],["f′(x) = 100(6x + 7)(3x² + 7x − 3)⁹",'10·10 = 100']],
+      r:"f′(x) = 100(6x + 7)(3x² + 7x − 3)⁹" }] },
+    { n:6, f:'Cadeia', st:'f(x) = (1/a)(bx² + ax)³', its:[{ id:'', ideia:RC + '   (a e b são constantes)',
+      c:[['u = bx² + ax  →  u′ = 2bx + a','derivar o de dentro'],["f′(x) = (1/a)·3(bx² + ax)²·(2bx + a)",'n·uⁿ⁻¹·u′'],["f′(x) = (3/a)(2bx + a)(bx² + ax)²",'(1/a)·3 = 3/a']],
+      r:"f′(x) = (3/a)(2bx + a)(bx² + ax)²" }] },
+    { n:7, f:'Produto e cadeia', st:'f(t) = (7t² + 6t)⁷(3t − 1)⁴', its:[{ id:'', ideia:RP + '   e   ' + RC,
+      c:[['u = (7t² + 6t)⁷  →  u′ = 7(7t² + 6t)⁶(14t + 6)','cadeia no 1º fator'],['v = (3t − 1)⁴  →  v′ = 4(3t − 1)³·3 = 12(3t − 1)³','cadeia no 2º fator'],
+         ["f′(t) = 7(14t + 6)(7t² + 6t)⁶(3t − 1)⁴ + 12(7t² + 6t)⁷(3t − 1)³",'u′·v + u·v′'],
+         ["f′(t) = (7t² + 6t)⁶(3t − 1)³ [7(14t + 6)(3t − 1) + 12(7t² + 6t)]",'pôr em evidência'],
+         ['7(14t + 6)(3t − 1) = 294t² + 28t − 42','distribuir'],['12(7t² + 6t) = 84t² + 72t','distribuir'],
+         ["f′(t) = (7t² + 6t)⁶(3t − 1)³ (378t² + 100t − 42)",'somar'],["f′(t) = 2(7t² + 6t)⁶(3t − 1)³ (189t² + 50t − 21)",'tirar o 2 em evidência']],
+      r:"f′(t) = 2(7t² + 6t)⁶(3t − 1)³(189t² + 50t − 21)" }] },
+    { n:8, f:'Cadeia e quociente', st:'f(t) = [(7t + 1)/(2t² + 3)]³', its:[{ id:'', ideia:RC + '   e   ' + RQ,
+      c:[['u = (7t + 1)/(2t² + 3)','o de dentro'],["u′ = [7(2t² + 3) − (7t + 1)·4t] / (2t² + 3)²",'quociente'],
+         ["u′ = (14t² + 21 − 28t² − 4t) / (2t² + 3)² = (−14t² − 4t + 21) / (2t² + 3)²",'distribuir e juntar'],
+         ["f′(t) = 3[(7t + 1)/(2t² + 3)]² · (−14t² − 4t + 21)/(2t² + 3)²",'3·u²·u′'],
+         ["f′(t) = 3(7t + 1)²(−14t² − 4t + 21) / (2t² + 3)⁴",'(2t² + 3)²·(2t² + 3)² = (2t² + 3)⁴']],
+      r:"f′(t) = 3(7t + 1)²(−14t² − 4t + 21) / (2t² + 3)⁴" }] },
+    { n:9, f:'Cadeia (raiz)', st:'f(x) = ∛(3x² + 6x − 2)²', its:[{ id:'', ideia:RC + '   e   ⁿ√(uᵐ) = u^(m/n)',
+      c:[['f(x) = (3x² + 6x − 2)^(2/3)','raiz vira expoente'],['u = 3x² + 6x − 2  →  u′ = 6x + 6','derivar o de dentro'],
+         ["f′(x) = (2/3)(3x² + 6x − 2)^(−1/3)·(6x + 6)",'n·uⁿ⁻¹·u′  (2/3 − 1 = −1/3)'],["f′(x) = (2/3)·6(x + 1) / ∛(3x² + 6x − 2)",'u^(−1/3) = 1/∛u'],
+         ["f′(x) = 4(x + 1) / ∛(3x² + 6x − 2)",'(2/3)·6 = 4']],
+      r:"f′(x) = 4(x + 1) / ∛(3x² + 6x − 2)" }] },
+    { n:10, f:'Quociente e cadeia', st:'f(x) = 2x / √(3x − 1)', its:[{ id:'', ideia:RQ + '   e   (√u)′ = u′ / (2√u)',
+      c:[['u = 2x  →  u′ = 2','derivar o de cima'],['v = √(3x − 1)  →  v′ = 3 / (2√(3x − 1))','cadeia: u′/(2√u)'],
+         ["f′(x) = [2√(3x − 1) − 2x · 3/(2√(3x − 1))] / (3x − 1)",'(u′v − uv′)/v²  (v² = 3x − 1)'],
+         ["f′(x) = [2√(3x − 1) − 3x/√(3x − 1)] / (3x − 1)",'2x·3/2 = 3x'],
+         ["f′(x) = [2(3x − 1) − 3x] / [√(3x − 1)·(3x − 1)]",'mesmo denominador √(3x − 1)'],
+         ["f′(x) = (3x − 2) / (3x − 1)^(3/2)",'6x − 2 − 3x = 3x − 2']],
+      r:"f′(x) = (3x − 2) / (3x − 1)^(3/2)" }] },
+    { n:11, f:'Cadeia (raiz) e quociente', st:'f(t) = √[(2t + 1)/(t − 1)]', its:[{ id:'', ideia:'(√u)′ = u′ / (2√u)   e   ' + RQ,
+      c:[['u = (2t + 1)/(t − 1)','o de dentro'],["u′ = [2(t − 1) − (2t + 1)·1] / (t − 1)²",'quociente'],["u′ = (2t − 2 − 2t − 1) / (t − 1)² = −3 / (t − 1)²",'distribuir'],
+         ["f′(t) = [−3/(t − 1)²] / (2√[(2t + 1)/(t − 1)])",'u′ / (2√u)'],
+         ["f′(t) = −3 / (2(t − 1)²) · √[(t − 1)/(2t + 1)]",'1/√(a/b) = √(b/a)']],
+      r:"f′(t) = −3√[(t − 1)/(2t + 1)] / [2(t − 1)²]" }] },
+    { n:12, f:'Cadeia (exponencial)', st:'f(x) = (1/3)e³⁻ˣ', its:[{ id:'', ideia:RE,
+      c:[['u = 3 − x  →  u′ = −1','derivar o expoente'],["f′(x) = (1/3)·e³⁻ˣ·(−1)",'eᵘ·u′'],["f′(x) = −(1/3)e³⁻ˣ",'multiplicar']],
+      r:"f′(x) = −(1/3)e³⁻ˣ" }] }
+  ]}
+});
 const trigKey = (l, n) => `trig${l}-${n}`;
 const trigDone = l => { const pr = store.get(); return TRIG[l].qs.filter(q => pr[trigKey(l, q.n)]).length; };
-MATERIAIS.trig = Object.keys(TRIG).map(l => ({ cat:'ex', data:TRIG[l].data, t:'Lista ' + TRIG[l].t, sub:TRIG[l].sub + ' · resolvida', go:() => trigList(l), info:() => `${trigDone(l)} de ${TRIG[l].qs.length} concluídas` }));
+const tLbl = l => TRIG[l].lbl || 'Lista ' + l.replace(/(\d)(\d)/, '$1.$2');
+const tLink = l => ({ cat:'ex', data:TRIG[l].data, t:TRIG[l].calc ? TRIG[l].t : 'Lista ' + TRIG[l].t, sub:TRIG[l].sub + ' · resolvida', go:() => trigList(l), info:() => `${trigDone(l)} de ${TRIG[l].qs.length} concluídas` });
+(MATERIAIS.calc = MATERIAIS.calc || []).push(...Object.keys(TRIG).filter(l => TRIG[l].disc === 'calc').map(tLink));
+MATERIAIS.trig = Object.keys(TRIG).filter(l => !TRIG[l].disc).map(l => ({ cat:'ex', data:TRIG[l].data, t:'Lista ' + TRIG[l].t, sub:TRIG[l].sub + ' · resolvida', go:() => trigList(l), info:() => `${trigDone(l)} de ${TRIG[l].qs.length} concluídas` }));
 function trigList(l){
   leave(); curView = 'trig'; const L = TRIG[l], pr = store.get();
-  crumbs([['Disciplinas','hub'], ['Trigonometria','disc-trig'], ['Lista ' + l.replace(/(\d)(\d)/, '$1.$2')]], false);
+  crumbs([['Disciplinas','hub'], [L.dn || 'Trigonometria','disc-' + (L.disc || 'trig')], [tLbl(l)]], false);
   view.innerHTML = `
-  <section class="hubhead" style="--dc:#ff6b5e">
-    <p class="eyebrow wr"><span class="cdot"></span> Trigonometria e Números Complexos · Prof. Olívio</p>
+  <section class="hubhead" style="--dc:${L.cor || '#ff6b5e'}">
+    <p class="eyebrow wr"><span class="cdot"></span> ${L.prof || 'Trigonometria e Números Complexos · Prof. Olívio'}</p>
     <h1 class="wr">${E(L.t)}</h1>
-    <p class="lede rv">${E(L.sub)}. Cada questão traz a ideia, os cálculos e a resposta para copiar.</p>
+    <p class="lede rv">${E(L.sub)}. Cada questão traz ${L.calc ? 'a regra, a resolução com setas' : 'a ideia, os cálculos'} e a resposta para copiar.</p>
   </section>
-  <div class="grid">${L.qs.map(q => `<button class="qcard rv" data-tq="${q.n}" style="--dc:#ff6b5e">
+  <div class="grid">${L.qs.map(q => `<button class="qcard rv" data-tq="${q.n}" style="--dc:${L.cor || '#ff6b5e'}">
     <span class="row"><span class="num">Questão ${q.n}</span>${pr[trigKey(l, q.n)] ? '<span class="pill ok">concluída ✓</span>' : '<span class="pill go">disponível</span>'}</span>
     <span class="txt">${E(q.st)}${q.its.length > 1 ? ' ' + q.its.map(it => it.id + ')').join(' ') : ''}</span><span class="peso">${E(q.f)}</span></button>`).join('')}</div>`;
   stagger(view);
@@ -3313,8 +3439,8 @@ function trigList(l){
 }
 function trigQ(l, n){
   leave(); curView = 'trig'; const L = TRIG[l], i = L.qs.findIndex(q => q.n === n), q = L.qs[i], nx = L.qs[i + 1];
-  const lt = 'Lista ' + l.replace(/(\d)(\d)/, '$1.$2');
-  crumbs([['Disciplinas','hub'], ['Trigonometria','disc-trig'], [lt, 'tl-' + l], ['Questão ' + n]], false);
+  const lt = tLbl(l);
+  crumbs([['Disciplinas','hub'], [L.dn || 'Trigonometria','disc-' + (L.disc || 'trig')], [lt, 'tl-' + l], ['Questão ' + n]], false);
   const feita = !!store.get()[trigKey(l, n)];
   const box = (lbl, inner) => `<div class="nbox in"><span class="nbl">${lbl}</span>${inner}</div>`;
   const line = (m, note) => `<div class="nl"><span class="m">${E(m)}</span>${note ? `<span class="note">← ${E(note)}</span>` : ''}</div>`;
@@ -3327,8 +3453,8 @@ function trigQ(l, n){
   ${q.its.map(it => `<section class="notebook tq rv">
     ${it.id ? `<h3>${it.id}) <span style="font-weight:400">${E(it.st)}</span></h3>` : ''}
     <div class="paper">
-      ${box('Ideia', `<div class="nl"><span class="m" style="font-family:var(--f-ui); font-size:1rem">${E(it.ideia)}</span></div>`)}
-      ${box('Cálculos', it.c.map(([m, nt]) => line(m, nt)).join(''))}
+      ${box(L.calc ? 'Regra' : 'Ideia', `<div class="nl"><span class="m" style="font-family:var(--f-ui); font-size:1rem">${E(it.ideia)}</span></div>`)}
+      ${box(L.calc ? 'Resolução' : 'Cálculos', it.c.map(([m, nt]) => line(m, nt)).join(''))}
       ${box('Resposta', line(it.r + '  ∎'))}
     </div></section>`).join('')}
   <div class="nbbar rv" style="margin-top:16px">
