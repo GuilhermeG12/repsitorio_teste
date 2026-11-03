@@ -4834,6 +4834,9 @@ else if(/^https?:$/.test(location.protocol)){
     subtitle.textContent = cd ? TRIG[cl].t + ' · Cálculo Diferencial' : lista ? 'Lista de 10 questões · MDC · UEMA Balsas · página ' + (+num <= 7 ? 1 : 2) : 'Teoria Elementar dos Números · página impressa ' + pages[n];
     modal.hidden = false;
     modal.setAttribute('aria-hidden', 'false');
+    const vh = window.innerHeight || document.documentElement.clientHeight || 640;
+    modal.querySelector('.bqm-panel').style.maxHeight = (vh - 12) + 'px';
+    image.style.maxHeight = Math.round(vh * 0.78) + 'px';
     document.body.style.overflow = 'hidden';
     closeButton.focus();
   }
