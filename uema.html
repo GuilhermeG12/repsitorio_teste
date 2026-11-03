@@ -425,6 +425,7 @@ text.al.fade{animation:fade .6s .5s ease both}
 .wf > span:last-child{padding:1px 4px 0}
 .wb sup{font-size:.62em}
 .wb u{text-decoration-thickness:2px; text-underline-offset:4px}
+.wle{font-family:Roboto, "Segoe UI", Arial, sans-serif; font-size:1.05em; font-weight:400; margin:0 1px}
 .wbst{font-family:"Itim", var(--f-hand)}
 .tq h3{font-size:1.25rem !important}
 .chip.cat{display:inline-flex; align-items:center; gap:8px}
@@ -3697,7 +3698,7 @@ const wbM = s => {
   h = h.replace(/_([^_]+)_/g, '<u>$1</u>');
   const re = /\[\[((?:(?!\[\[|\]\]).)*?)\|\|((?:(?!\[\[|\]\]).)*?)\]\]/g;
   do { a = h; h = h.replace(re, '<span class="wf"><span>$1</span><span>$2</span></span>'); } while(h !== a);
-  return h.replace(/\{\{(.+?)\}\}/g, '<span class="wbox">$1</span>').replace(/\n/g, '<br>');
+  return h.replace(/\{\{(.+?)\}\}/g, '<span class="wbox">$1</span>').replace(/\n/g, '<br>').replace(/[≤≥]/g, '<span class="wle">$&</span>');
 };
 const wbRule = s => s.replace('(u/v)′ = (u′·v − u·v′) / v²', '([[u||v]])′ = [[u′·v − u·v′||v²]]').replace('(√u)′ = u′ / (2√u)', '(√u)′ = [[u′||2√u]]');
 const wbSt = q => { if(q.wst) return q.wst; const p = q.wb[0][0].replace(/_/g, '').split(' = '); return p[0] + ' = ' + p[1]; };
