@@ -425,6 +425,7 @@ text.al.fade{animation:fade .6s .5s ease both}
 .wf > span:last-child{padding:1px 4px 0}
 .wb sup{font-size:.62em}
 .wb u{text-decoration-thickness:2px; text-underline-offset:4px}
+.wb .wl:has(> span > .wbox){overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px}
 .wle{font-family:Roboto, "Segoe UI", Arial, sans-serif; font-size:1.05em; font-weight:400; margin:0 1px}
 .wbst{font-family:"Itim", var(--f-hand)}
 .tq h3{font-size:1.25rem !important}
@@ -3347,7 +3348,7 @@ const TRIG = {
 // soluções sempre a partir do 0, somando k·2π; F põe as frações em pé
 const F = s => s.replace(/(\d*)π\/(\d+)/g, '[[$1π||$2]]').replace(/√(\d)\/(\d)/g, '[[√$1||$2]]').replace(/(^|[^\d√])(\d+)\/(\d+)/g, '$1[[$2||$3]]');
 const T71 = (n, lt, wst, S, circ) => ({ n, lt, f:'7.1 Exemplos · questão ' + lt.replace(/\D/g, ''), st:wst, wst:F(wst), its:[{ id:'', ideia:'' }],
-  wb:S.map(s => ['{{' + F(s) + ' }}']), circ }); // solução numa linha só (arrasta para o lado)
+  wb:S.map(s => ['{{' + ((s.match(/  ou  /g) || []).length >= 2 ? F(s).replace(/  ou  /g, '\nou ') : F(s)) + ' }}']), circ }); // solução numa linha só (arrasta para o lado)
 const K = ' + k·2π';
 TRIG['71'] = { calc:true, data:'03/11', t:'7.1 Inequações trigonométricas', sub:'círculo trigonométrico e solução', qs:[
   T71(1, '1a', 'sen x ≥ 0', ['S = { x ∈ ℝ | k·2π ≤ x ≤ π' + K + ', k ∈ ℤ }'],
@@ -3698,7 +3699,7 @@ const wbM = s => {
   h = h.replace(/_([^_]+)_/g, '<u>$1</u>');
   const re = /\[\[((?:(?!\[\[|\]\]).)*?)\|\|((?:(?!\[\[|\]\]).)*?)\]\]/g;
   do { a = h; h = h.replace(re, '<span class="wf"><span>$1</span><span>$2</span></span>'); } while(h !== a);
-  return h.replace(/\{\{(.+?)\}\}/g, '<span class="wbox">$1</span>').replace(/\n/g, '<br>').replace(/[≤≥]/g, '<span class="wle">$&</span>');
+  return h.replace(/\{\{([\s\S]+?)\}\}/g, '<span class="wbox">$1</span>').replace(/\n/g, '<br>').replace(/[≤≥]/g, '<span class="wle">$&</span>');
 };
 const wbRule = s => s.replace('(u/v)′ = (u′·v − u·v′) / v²', '([[u||v]])′ = [[u′·v − u·v′||v²]]').replace('(√u)′ = u′ / (2√u)', '(√u)′ = [[u′||2√u]]');
 const wbSt = q => { if(q.wst) return q.wst; const p = q.wb[0][0].replace(/_/g, '').split(' = '); return p[0] + ' = ' + p[1]; };
@@ -4957,7 +4958,7 @@ else if(/^https?:$/.test(location.protocol)){
 
 /* ---------- quadros largos: indica que dá para arrastar para o lado ---------- */
 function marcaArraste(){
-  document.querySelectorAll('.qd-sl, .qd-blk, .qd-r, .wb').forEach(el => {
+  document.querySelectorAll('.qd-sl, .qd-blk, .qd-r, .wb, .wb .wl').forEach(el => {
     if(!el.offsetParent) return;
     const mais = el.scrollWidth > el.clientWidth + 4, dica = el.nextElementSibling && el.nextElementSibling.classList.contains('arraste') ? el.nextElementSibling : null;
     el.classList.toggle('tem-mais', mais && el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
