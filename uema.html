@@ -4108,7 +4108,38 @@ function tickClock(){
   document.querySelectorAll('[data-clock="hm"]').forEach(el => el.textContent = hms);
 }
 tickClock(); setInterval(tickClock, 1000);
-hub();
+/* ---------- navegação: botão voltar (celular/navegador) e recarregar na mesma página ---------- */
+const NAV = { depth:0, restoring:false, cur:null };
+['hub','disc','home','question','item','cron','trigList','trigQ','obsView','estudo','estudoPag','art'].forEach(name => {
+  const orig = window[name]; if(typeof orig !== 'function') return;
+  window[name] = function(...a){
+    if(NAV.depth > 0 || NAV.restoring) return orig.apply(this, a);
+    NAV.depth++;
+    try{ return orig.apply(this, a); }
+    finally{
+      NAV.depth--;
+      const st = { f:name, a:name === 'home' ? [CAP] : a, cap:CAP }, s = JSON.stringify(st);
+      if(s !== NAV.cur){ try{ (NAV.cur ? history.pushState : history.replaceState).call(history, st, ''); }catch(e){} NAV.cur = s; }
+      try{ sessionStorage.setItem('uema-pos', s); }catch(e){}
+    }
+  };
+});
+function navGo(st){
+  NAV.restoring = true;
+  try{ setCap(st.cap || 4); window[st.f](...(st.a || [])); NAV.cur = JSON.stringify(st); try{ sessionStorage.setItem('uema-pos', NAV.cur); }catch(e){} }
+  finally{ NAV.restoring = false; }
+}
+addEventListener('popstate', e => { if(e.state && e.state.f) navGo(e.state); });
+let navScrollT = null;
+addEventListener('scroll', () => { clearTimeout(navScrollT); navScrollT = setTimeout(() => { try{ sessionStorage.setItem('uema-scroll', String(scrollY)); }catch(e){} }, 200); }, { passive:true });
+(() => {
+  let pos = null, y = 0;
+  try{ pos = JSON.parse(sessionStorage.getItem('uema-pos')); y = +sessionStorage.getItem('uema-scroll') || 0; }catch(e){}
+  if(pos && pos.f && typeof window[pos.f] === 'function'){
+    try{ navGo(pos); try{ history.replaceState(pos, ''); }catch(e){} setTimeout(() => scrollTo(0, y), 450); return; }catch(e){}
+  }
+  hub();
+})();
 // dentro do app do Claude: sincroniza pela sua conta (PC e celular)
 cloudStart().then(ok => { if(!ok) setTimeout(cloudStart, 1500); });
 // site e app do celular: sincroniza pelo GitHub (repositório privado uema-dados)
