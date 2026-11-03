@@ -3339,6 +3339,90 @@ const TRIG = {
       r:'sen x = ±√15/4' }] }
   ]}
 };
+/* ---------- Trigonometria · 7.1 inequações (com intervalo e círculo) ---------- */
+// circ: ax = eixo usado (sen/cos/tg), ms = valores marcados no eixo, arcs = [de°, até°, fechado?, fechado?], lb = rótulos dos ângulos
+TRIG['71'] = { data:'03/11', t:'7.1 Inequações trigonométricas', sub:'seno, cosseno e tangente · intervalo e círculo', qs:[
+  { n:1, f:'Apostila, 7.1 Exemplos', st:'Resolva as inequações, sendo x ∈ ℝ:', its:[
+    { id:'a', st:'sen x ≥ 0',
+      ideia:'O seno é a ordenada (eixo vertical). sen x ≥ 0 é a metade de cima do círculo, com as pontas incluídas.',
+      c:[['sen x = 0 ⟹ x = 0 ou x = π','onde o seno zera'],['acima do eixo horizontal: 1º e 2º quadrantes','sen ≥ 0'],['0 ≤ x ≤ π','pontas fechadas (≥)']],
+      iv:'[0, π]', r:'S = { x ∈ ℝ | 2kπ ≤ x ≤ π + 2kπ, k ∈ ℤ }',
+      circ:{ ax:'sen', ms:[[0,'0']], arcs:[[0,180,1,1]], lb:[[0,'0'],[180,'π']] } },
+    { id:'b', st:'sen x ≤ −√3/2',
+      ideia:'Marca −√3/2 no eixo do seno e pega a parte do círculo que fica abaixo dessa linha.',
+      c:[['sen x = −√3/2 ⟹ x = 4π/3 ou x = 5π/3','sen 60° = √3/2, negativo no 3º e 4º Q'],['4π/3 = π + π/3   e   5π/3 = 2π − π/3','arco de referência π/3'],['4π/3 ≤ x ≤ 5π/3','abaixo da linha, pontas fechadas']],
+      iv:'[4π/3, 5π/3]', r:'S = { x ∈ ℝ | 4π/3 + 2kπ ≤ x ≤ 5π/3 + 2kπ, k ∈ ℤ }',
+      circ:{ ax:'sen', ms:[[-0.866,'−√3/2']], arcs:[[240,300,1,1]], lb:[[240,'4π/3'],[300,'5π/3']] } },
+    { id:'c', st:'−1/2 ≤ sen x < √2/2',
+      ideia:'São duas linhas no eixo do seno: o arco fica entre elas (acima de −1/2 e abaixo de √2/2).',
+      c:[['sen x = √2/2 ⟹ x = π/4 ou 3π/4','sen 45° = √2/2'],['sen x = −1/2 ⟹ x = 7π/6 ou 11π/6','sen 30° = 1/2, negativo no 3º e 4º Q'],['entre as linhas: de 11π/6 até π/4 (passando pelo 0) e de 3π/4 até 7π/6','faixa do meio'],['−1/2 ⟹ fechado (≤)     √2/2 ⟹ aberto (<)','tipo das bolinhas'],['11π/6 = −π/6 na volta anterior','para escrever sem quebrar em 2π']],
+      iv:'[0, π/4[ ∪ ]3π/4, 7π/6] ∪ [11π/6, 2π[', r:'S = { x ∈ ℝ | −π/6 + 2kπ ≤ x < π/4 + 2kπ  ou  3π/4 + 2kπ < x ≤ 7π/6 + 2kπ, k ∈ ℤ }',
+      circ:{ ax:'sen', ms:[[0.707,'√2/2'],[-0.5,'−1/2']], arcs:[[-30,45,1,0],[135,210,0,1]], lb:[[45,'π/4'],[135,'3π/4'],[210,'7π/6'],[330,'11π/6']] } },
+    { id:'d', st:'|sen x| ≤ 1/2',
+      ideia:'Módulo: |a| ≤ b ⟺ −b ≤ a ≤ b. Vira a faixa −1/2 ≤ sen x ≤ 1/2.',
+      c:[['|sen x| ≤ 1/2 ⟺ −1/2 ≤ sen x ≤ 1/2','propriedade do módulo'],['sen x = 1/2 ⟹ x = π/6 ou 5π/6','sen 30° = 1/2'],['sen x = −1/2 ⟹ x = 7π/6 ou 11π/6','negativo no 3º e 4º Q'],['arcos: [11π/6, π/6] e [5π/6, 7π/6]','faixa do meio, pontas fechadas'],['os dois arcos são opostos (distam π)','junta com kπ']],
+      iv:'[0, π/6] ∪ [5π/6, 7π/6] ∪ [11π/6, 2π[', r:'S = { x ∈ ℝ | −π/6 + kπ ≤ x ≤ π/6 + kπ, k ∈ ℤ }',
+      circ:{ ax:'sen', ms:[[0.5,'1/2'],[-0.5,'−1/2']], arcs:[[-30,30,1,1],[150,210,1,1]], lb:[[30,'π/6'],[150,'5π/6'],[210,'7π/6'],[330,'11π/6']] } },
+    { id:'e', st:'2·sen²x < sen x',
+      ideia:'Passa tudo para um lado e fatora: sen x·(2sen x − 1) < 0. Produto negativo ⟹ sen x entre as raízes 0 e 1/2.',
+      c:[['2sen²x − sen x < 0','passa sen x para a esquerda'],['sen x·(2sen x − 1) < 0','fator comum sen x'],['raízes: sen x = 0  e  sen x = 1/2','zera cada fator'],['0 < sen x < 1/2','parábola (y = 2y² − y) negativa entre as raízes'],['sen x = 0 ⟹ 0, π     sen x = 1/2 ⟹ π/6, 5π/6','ângulos'],['0 < x < π/6   ou   5π/6 < x < π','faixa entre as linhas, pontas abertas']],
+      iv:']0, π/6[ ∪ ]5π/6, π[', r:'S = { x ∈ ℝ | 2kπ < x < π/6 + 2kπ  ou  5π/6 + 2kπ < x < π + 2kπ, k ∈ ℤ }',
+      circ:{ ax:'sen', ms:[[0.5,'1/2'],[0,'0']], arcs:[[0,30,0,0],[150,180,0,0]], lb:[[0,'0'],[30,'π/6'],[150,'5π/6'],[180,'π']] } }] },
+  { n:2, f:'Apostila, 7.1 Exemplos', st:'Determinar o conjunto solução das inequações:', its:[
+    { id:'a', st:'cos x > √3/2',
+      ideia:'O cosseno é a abscissa (eixo horizontal). cos x > √3/2 é a parte do círculo à direita da linha vertical em √3/2.',
+      c:[['cos x = √3/2 ⟹ x = π/6 ou x = 11π/6','cos 30° = √3/2, positivo no 1º e 4º Q'],['11π/6 = −π/6','mesma posição, uma volta antes'],['−π/6 < x < π/6','à direita da linha, pontas abertas (>)']],
+      iv:'[0, π/6[ ∪ ]11π/6, 2π[', r:'S = { x ∈ ℝ | −π/6 + 2kπ < x < π/6 + 2kπ, k ∈ ℤ }',
+      circ:{ ax:'cos', ms:[[0.866,'√3/2']], arcs:[[-30,30,0,0]], lb:[[30,'π/6'],[330,'11π/6']] } },
+    { id:'b', st:'cos x > −1',
+      ideia:'O cosseno vale no mínimo −1. Então cos x > −1 é o círculo todo, menos o ponto onde cos x = −1.',
+      c:[['−1 ≤ cos x ≤ 1','sempre'],['cos x = −1 ⟹ x = π','único ponto excluído na volta'],['x ≠ π','todo o resto serve']],
+      iv:'[0, π[ ∪ ]π, 2π[', r:'S = { x ∈ ℝ | x ≠ π + 2kπ, k ∈ ℤ }',
+      circ:{ ax:'cos', ms:[[-1,'−1']], arcs:[[-180,180,0,0]], lb:[[180,'π']] } }] },
+  { n:3, f:'Apostila, 7.1 Exemplos', st:'Resolva as inequações trigonométricas considerando 0 ≤ x ≤ 2π.', its:[
+    { id:'a', st:'tg x > 1',
+      ideia:'A tangente é lida no eixo t (reta vertical que toca o círculo em x = 0). tg x > 1: a reta do centro corta o eixo t acima de 1. Cuidado: tg não existe em π/2 e 3π/2.',
+      c:[['tg x = 1 ⟹ x = π/4 ou x = 5π/4','tg 45° = 1, positiva no 1º e 3º Q'],['tg cresce até +∞ perto de π/2 e 3π/2','esses pontos ficam abertos'],['π/4 < x < π/2   ou   5π/4 < x < 3π/2','dois arcos opostos']],
+      iv:']π/4, π/2[ ∪ ]5π/4, 3π/2[', r:'S = { x ∈ ℝ | π/4 < x < π/2  ou  5π/4 < x < 3π/2 }',
+      circ:{ ax:'tg', ms:[[1,'1']], arcs:[[45,90,0,0],[225,270,0,0]], lb:[[45,'π/4'],[90,'π/2'],[225,'5π/4'],[270,'3π/2']] } },
+    { id:'b', st:'tg x > √3/3',
+      ideia:'Marca √3/3 no eixo t; o arco vai desse ângulo até onde a tangente explode (π/2 e 3π/2).',
+      c:[['tg x = √3/3 ⟹ x = π/6 ou x = 7π/6','tg 30° = √3/3, positiva no 1º e 3º Q'],['π/2 e 3π/2 ficam de fora','tg não existe'],['π/6 < x < π/2   ou   7π/6 < x < 3π/2','pontas abertas (>)']],
+      iv:']π/6, π/2[ ∪ ]7π/6, 3π/2[', r:'S = { x ∈ ℝ | π/6 < x < π/2  ou  7π/6 < x < 3π/2 }',
+      circ:{ ax:'tg', ms:[[0.577,'√3/3']], arcs:[[30,90,0,0],[210,270,0,0]], lb:[[30,'π/6'],[90,'π/2'],[210,'7π/6'],[270,'3π/2']] } },
+    { id:'c', st:'−√3 ≤ tg x < √3/3',
+      ideia:'Faixa no eixo t entre −√3 e √3/3. A tangente cresce em cada pedaço: de −π/2 a π/2 e de π/2 a 3π/2.',
+      c:[['tg x = √3/3 ⟹ x = π/6 ou 7π/6','tg 30° = √3/3 (aberto: <)'],['tg x = −√3 ⟹ x = 2π/3 ou 5π/3','tg 60° = √3, negativa no 2º e 4º Q (fechado: ≤)'],['1º pedaço: 0 ≤ x < π/6','de 0 até √3/3'],['2º pedaço: 2π/3 ≤ x < 7π/6','de −√3, passa por π (tg = 0), até √3/3'],['3º pedaço: 5π/3 ≤ x ≤ 2π','de −√3 até 0 em 2π']],
+      iv:'[0, π/6[ ∪ [2π/3, 7π/6[ ∪ [5π/3, 2π]', r:'S = { x ∈ ℝ | 0 ≤ x < π/6  ou  2π/3 ≤ x < 7π/6  ou  5π/3 ≤ x ≤ 2π }',
+      circ:{ ax:'tg', ms:[[0.577,'√3/3'],[-1.732,'−√3']], arcs:[[0,30,1,0],[120,210,1,0],[300,360,1,1]], lb:[[0,'0'],[30,'π/6'],[120,'2π/3'],[210,'7π/6'],[300,'5π/3']] } }] }
+]};
+// desenha o círculo trigonométrico com o arco-solução em vermelho
+function trigCirc(c){
+  const R = 80, X = 130, Y = 120, rad = d => d * Math.PI / 180, P = (d, r = R) => [X + r * Math.cos(rad(d)), Y - r * Math.sin(rad(d))];
+  const f = n => n.toFixed(1), V = '#e0322b', ink = 'currentColor';
+  let s = `<line x1="${X - R - 22}" y1="${Y}" x2="${X + R + 22}" y2="${Y}" stroke="${ink}" stroke-width="1.2"/><line x1="${X}" y1="${Y + R + 22}" x2="${X}" y2="${Y - R - 22}" stroke="${ink}" stroke-width="1.2"/>
+    <circle cx="${X}" cy="${Y}" r="${R}" fill="none" stroke="${ink}" stroke-width="1.6"/>`;
+  c.ms.forEach(([v, t]) => {
+    if(c.ax === 'sen'){ const y = Y - v * R, w = Math.sqrt(Math.max(0, 1 - v * v)) * R;
+      s += `<line x1="${f(X - R - 14)}" y1="${f(y)}" x2="${f(X + R + 14)}" y2="${f(y)}" stroke="${ink}" stroke-dasharray="4 4" opacity=".55"/><text x="${X + 5}" y="${f(y - 4)}" font-size="12" fill="${V}">${t}</text>`; }
+    else if(c.ax === 'cos'){ const x = X + v * R;
+      s += `<line x1="${f(x)}" y1="${Y - R - 14}" x2="${f(x)}" y2="${Y + R + 14}" stroke="${ink}" stroke-dasharray="4 4" opacity=".55"/><text x="${f(x + 4)}" y="${Y + 15}" font-size="12" fill="${V}">${t}</text>`; }
+    else { const y = Y - v * R, d = Math.atan(v) * 180 / Math.PI, [ax, ay] = P(d + 180);
+      s += `<line x1="${f(ax)}" y1="${f(ay)}" x2="${X + R}" y2="${f(y)}" stroke="${ink}" stroke-dasharray="4 4" opacity=".55"/><circle cx="${X + R}" cy="${f(y)}" r="3" fill="${V}"/><text x="${X + R + 8}" y="${f(y + 4)}" font-size="12" fill="${V}">${t}</text>`; }
+  });
+  if(c.ax === 'tg') s += `<line x1="${X + R}" y1="${Y - R - 70}" x2="${X + R}" y2="${Y + R + 70}" stroke="${ink}" stroke-width="1.4"/><text x="${X + R + 5}" y="${Y - R - 58}" font-size="12" font-style="italic" fill="${ink}">t</text>`;
+  c.arcs.forEach(([a, b]) => { // divide em pedaços < 180° para o arco do SVG sair certo
+    const n = Math.ceil((b - a) / 170), h = (b - a) / n;
+    for(let i = 0; i < n; i++){ const [x1, y1] = P(a + i * h), [x2, y2] = P(a + (i + 1) * h);
+      s += `<path d="M${f(x1)} ${f(y1)} A${R} ${R} 0 0 0 ${f(x2)} ${f(y2)}" fill="none" stroke="${V}" stroke-width="5" stroke-linecap="butt"/>`; } });
+  c.arcs.forEach(([a, b, fa, fb]) => [[a, fa], [b, fb]].forEach(([d, fe]) => { const [x, y] = P(d);
+    s += `<circle cx="${f(x)}" cy="${f(y)}" r="5" fill="${fe ? V : '#fff'}" stroke="${V}" stroke-width="2"/>`; }));
+  c.lb.forEach(([d, t]) => { const cs = Math.cos(rad(d)), dentro = c.ax === 'tg' && cs > .3, [x, y] = P(d, dentro ? R - 14 : R + 19); // no tg, os rótulos da direita vão para dentro (o eixo t ocupa o lado de fora)
+    s += `<text x="${f(x)}" y="${f(y + 4)}" font-size="13" font-weight="600" text-anchor="${dentro || cs < -.3 ? 'end' : cs > .3 ? 'start' : 'middle'}" fill="${ink}">${t}</text>`; });
+  const top = c.ax === 'tg' ? Y - R - 75 : 0, alt = c.ax === 'tg' ? 2 * R + 150 : 240;
+  return `<svg viewBox="0 ${top} 290 ${alt}" style="width:100%; max-width:330px; display:block; margin:4px auto; font-family:var(--f-ui)">${s}</svg>
+    <div class="nl" style="justify-content:center; font-family:var(--f-ui); font-size:.85rem; opacity:.8">● fechado (entra) &nbsp; ○ aberto (não entra) &nbsp; <span style="color:${V}">━ solução</span></div>`;
+}
 /* ---------- Cálculo · listas de derivadas (só resolução para o caderno) ---------- */
 const RP = 'Regra do produto:  (u·v)′ = u′·v + u·v′', RQ = 'Regra do quociente:  (u/v)′ = (u′·v − u·v′) / v²',
   RPOT = 'Regra da potência:  (xⁿ)′ = n·xⁿ⁻¹', RK = 'Constante:  (k·u)′ = k·u′',
@@ -3692,6 +3776,8 @@ function trigQ(l, n){
     <div class="paper">
       ${box(L.calc ? 'Regra' : 'Ideia', `<div class="nl"><span class="m" style="font-family:var(--f-ui); font-size:1rem">${E(it.ideia)}</span></div>`)}
       ${box(L.calc ? 'Resolução' : 'Cálculos', it.c.map(([m, nt]) => line(m, nt)).join(''))}
+      ${it.iv ? box('Intervalo (1ª volta: 0 ≤ x < 2π)', line(it.iv)) : ''}
+      ${it.circ ? box('No círculo trigonométrico', trigCirc(it.circ)) : ''}
       ${box('Resposta', line(it.r + '  ∎'))}
     </div></section>`).join('')}
   <div class="nbbar rv" style="margin-top:16px">
