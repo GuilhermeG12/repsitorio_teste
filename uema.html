@@ -411,6 +411,18 @@ text.al.fade{animation:fade .6s .5s ease both}
 .controls .info{margin-left:auto; font-size:12.5px; color:var(--chalk-dim); font-variant-numeric:tabular-nums}
 
 .tq .nl .note{white-space:normal}
+/* quadro branco (Cálculo) */
+.wb{position:relative; box-sizing:border-box; max-width:100%; width:100%; margin-top:14px; padding:18px 16px 20px; border:9px solid #c7ccd1; border-radius:6px; background:linear-gradient(160deg,#f1f8f5 0%,#dfeee8 55%,#d4e7e0 100%);
+  box-shadow:inset 0 0 50px rgba(255,255,255,.55), 0 6px 20px rgba(0,0,0,.35); color:#1f55b8; font-family:var(--f-hand); font-size:clamp(1.05rem,3.6vw,1.3rem); line-height:1.5; overflow-x:auto}
+.wb .wr{color:#1d7a43; font-size:.82em; border-bottom:1.5px dashed #1d7a4388; padding-bottom:6px; margin-bottom:6px}
+.wb .wl{margin:12px 0; display:flex; flex-wrap:wrap; align-items:center; column-gap:12px}
+.wb .wn{color:#c0392b; font-size:.74em; white-space:nowrap}
+.wb .wbox{border:2.5px solid #1f55b8; border-radius:12px; padding:4px 12px}
+.wb .wf{display:inline-flex; flex-direction:column; vertical-align:middle; text-align:center; margin:0 3px; line-height:1.25}
+.wb .wf > span:first-child{border-bottom:2px solid #1f55b8; padding:0 4px 1px}
+.wb .wf > span:last-child{padding:1px 4px 0}
+.wb sup{font-size:.62em}
+.wb u{text-decoration-thickness:2px; text-underline-offset:4px}
 .tq h3{font-size:1.25rem !important}
 .chip.cat{display:inline-flex; align-items:center; gap:8px}
 .chip.cat .cn{font-size:12px; font-weight:800; min-width:22px; padding:1px 7px; border-radius:99px; background:rgba(255,255,255,.12); text-align:center}
@@ -3415,6 +3427,59 @@ Object.assign(TRIG, {
       r:"f′(x) = −(1/3)e³⁻ˣ" }] }
   ]}
 });
+/* ---------- Cálculo · resolução no quadro branco (do jeito do professor) ---------- */
+// [[a||b]] = fração em pé · ^(…) = expoente · _…_ = sublinhado · ! no começo = resposta no retângulo
+const WB = {
+  'cd1-5': [['f(x) = _(2x + 1)_ · _(3x² + 6)_'],['f′(x) = 2·(3x² + 6) + (2x + 1)·(6x)','u′·v + u·v′'],['f′(x) = 6x² + 12 + 12x² + 6x'],['!f′(x) = 18x² + 6x + 12']],
+  'cd1-6': [['f(x) = _(7x − 1)_ · _(x + 4)_'],['f′(x) = 7·(x + 4) + (7x − 1)·1','u′·v + u·v′'],['f′(x) = 7x + 28 + 7x − 1'],['!f′(x) = 14x + 27']],
+  'cd1-7': [['f(x) = _(3x⁵ − 1)_ · _(2 − x⁴)_'],['f′(x) = 15x⁴·(2 − x⁴) + (3x⁵ − 1)·(−4x³)','u′·v + u·v′'],['f′(x) = 30x⁴ − 15x⁸ − 12x⁸ + 4x³'],['!f′(x) = −27x⁸ + 30x⁴ + 4x³']],
+  'cd1-8': [['f(x) = [[2||3]](5x − 3)⁻¹(5x + 3) = [[2||3]]·[[5x + 3||5x − 3]]','(5x − 3)⁻¹ = 1/(5x − 3)'],
+    ['f′(x) = [[2||3]]·[[5·(5x − 3) − (5x + 3)·5||(5x − 3)²]]','(u′·v − u·v′)/v²'],['f′(x) = [[2||3]]·[[25x − 15 − 25x − 15||(5x − 3)²]]'],
+    ['f′(x) = [[2||3]]·[[−30||(5x − 3)²]]'],['!f′(x) = [[−20||(5x − 3)²]]']],
+  'cd1-9': [['f(x) = _(x − 1)_ · _(x + 1)_'],['f′(x) = 1·(x + 1) + (x − 1)·1','u′·v + u·v′'],['!f′(x) = 2x']],
+  'cd1-10': [['f(s) = _(s² − 1)_ · _(3s − 1)_ · _(5s³ + 2s)_'],
+    ['f′(s) = 2s·(3s − 1)(5s³ + 2s) + (s² − 1)·3·(5s³ + 2s) + (s² − 1)(3s − 1)·(15s² + 2)','u′vw + uv′w + uvw′'],
+    ['f′(s) = (30s⁵ − 10s⁴ + 12s³ − 4s²) + (15s⁵ − 9s³ − 6s) + (45s⁵ − 15s⁴ − 39s³ + 13s² − 6s + 2)','distribuir cada termo'],
+    ['!f′(s) = 90s⁵ − 25s⁴ − 36s³ + 9s² − 12s + 2']],
+  'cd1-11': [['f(x) = 7·(ax² + bx + c)'],['f′(x) = 7·(2ax + b + 0)','a constante 7 sai'],['!f′(x) = 14ax + 7b']],
+  'cd1-12': [['f(u) = _(4u² − a)_ · _(a − 2u)_'],['f′(u) = 8u·(a − 2u) + (4u² − a)·(−2)','u′·v + u·v′'],['f′(u) = 8au − 16u² − 8u² + 2a'],['!f′(u) = −24u² + 8au + 2a']],
+  'cd1-13': [['f(x) = [[2x + 4||3x − 1]]'],['f′(x) = [[2·(3x − 1) − (2x + 4)·3||(3x − 1)²]]','(u′·v − u·v′)/v²'],['f′(x) = [[6x − 2 − 6x − 12||(3x − 1)²]]'],['!f′(x) = [[−14||(3x − 1)²]]']],
+  'cd1-14': [['f(t) = [[t − 1||t + 1]]'],['f′(t) = [[1·(t + 1) − (t − 1)·1||(t + 1)²]]','(u′·v − u·v′)/v²'],['f′(t) = [[t + 1 − t + 1||(t + 1)²]]'],['!f′(t) = [[2||(t + 1)²]]']],
+  'cd1-15': [['f(t) = [[3t² + 5t − 1||t − 1]]'],['f′(t) = [[(6t + 5)·(t − 1) − (3t² + 5t − 1)·1||(t − 1)²]]','(u′·v − u·v′)/v²'],
+    ['f′(t) = [[6t² − t − 5 − 3t² − 5t + 1||(t − 1)²]]'],['!f′(t) = [[3t² − 6t − 4||(t − 1)²]]']],
+  'cd1-16': [['f(t) = [[2 − t²||t − 2]]'],['f′(t) = [[(−2t)·(t − 2) − (2 − t²)·1||(t − 2)²]]','(u′·v − u·v′)/v²'],['f′(t) = [[−2t² + 4t − 2 + t²||(t − 2)²]]'],['!f′(t) = [[−t² + 4t − 2||(t − 2)²]]']],
+  'cd1-17': [['f(x) = [[4 − x||5 − x²]]'],['f′(x) = [[(−1)·(5 − x²) − (4 − x)·(−2x)||(5 − x²)²]]','(u′·v − u·v′)/v²'],['f′(x) = [[−5 + x² + 8x − 2x²||(5 − x²)²]]'],['!f′(x) = [[−x² + 8x − 5||(5 − x²)²]]']],
+  'cd1-18': [['f(x) = [[5x + 7||2x − 2]]'],['f′(x) = [[5·(2x − 2) − (5x + 7)·2||(2x − 2)²]]','(u′·v − u·v′)/v²'],
+    ['f′(x) = [[10x − 10 − 10x − 14||(2x − 2)²]] = [[−24||4(x − 1)²]]','(2x − 2)² = 4(x − 1)²'],['!f′(x) = [[−6||(x − 1)²]]']],
+  'cd1-19': [['f(x) = [[x + 1||x + 2]]·(3x² + 6x) = [[x + 1||x + 2]]·3x·(x + 2)','3x em evidência'],['f(x) = 3x·(x + 1) = 3x² + 3x','cancela (x + 2), x ≠ −2'],['!f′(x) = 6x + 3']],
+  'cd1-20': [['f(t) = [[(t − a)²||t − b]]'],['f′(t) = [[2(t − a)·1·(t − b) − (t − a)²·1||(t − b)²]]','quociente + cadeia no (t − a)²'],
+    ['f′(t) = [[(t − a)·[2(t − b) − (t − a)]||(t − b)²]]','(t − a) em evidência'],['!f′(t) = [[(t − a)(t + a − 2b)||(t − b)²]]']],
+  'cd1-21': [['f(x) = [[3||x⁴]] + [[5||x⁵]] = 3x⁻⁴ + 5x⁻⁵'],['f′(x) = 3·(−4)x⁻⁵ + 5·(−5)x⁻⁶','n·xⁿ⁻¹'],['f′(x) = −12x⁻⁵ − 25x⁻⁶'],['!f′(x) = −[[12||x⁵]] − [[25||x⁶]]']],
+  'cd1-22': [['f(x) = [[1||2]]x⁴ + [[2||x⁶]] = [[1||2]]x⁴ + 2x⁻⁶'],['f′(x) = [[1||2]]·4x³ + 2·(−6)x⁻⁷','n·xⁿ⁻¹'],['!f′(x) = 2x³ − [[12||x⁷]]']],
+  'cd2-5': [['f(x) = 10·(3x² + 7x − 3)¹⁰'],['f′(x) = 10·10(3x² + 7x − 3)⁹·(6x + 7)','n·uⁿ⁻¹·u′'],['!f′(x) = 100(6x + 7)(3x² + 7x − 3)⁹']],
+  'cd2-6': [['f(x) = [[1||a]](bx² + ax)³'],['f′(x) = [[1||a]]·3(bx² + ax)²·(2bx + a)','n·uⁿ⁻¹·u′'],['!f′(x) = [[3(2bx + a)(bx² + ax)²||a]]']],
+  'cd2-7': [['f(t) = _(7t² + 6t)⁷_ · _(3t − 1)⁴_'],
+    ['f′(t) = 7(7t² + 6t)⁶·(14t + 6)·(3t − 1)⁴ + (7t² + 6t)⁷·4(3t − 1)³·3','u′·v + u·v′ com cadeia'],
+    ['f′(t) = (7t² + 6t)⁶(3t − 1)³·[7(14t + 6)(3t − 1) + 12(7t² + 6t)]','evidência'],
+    ['f′(t) = (7t² + 6t)⁶(3t − 1)³·[294t² + 28t − 42 + 84t² + 72t]'],['!f′(t) = 2(7t² + 6t)⁶(3t − 1)³(189t² + 50t − 21)']],
+  'cd2-8': [['f(t) = ([[7t + 1||2t² + 3]])³'],['f′(t) = 3([[7t + 1||2t² + 3]])²·[[7·(2t² + 3) − (7t + 1)·4t||(2t² + 3)²]]','cadeia × quociente'],
+    ['f′(t) = 3·[[(7t + 1)²||(2t² + 3)²]]·[[14t² + 21 − 28t² − 4t||(2t² + 3)²]]'],['!f′(t) = [[3(7t + 1)²(−14t² − 4t + 21)||(2t² + 3)⁴]]']],
+  'cd2-9': [['f(x) = ∛(3x² + 6x − 2)² = (3x² + 6x − 2)^(2/3)','raiz vira expoente'],['f′(x) = [[2||3]](3x² + 6x − 2)^(−1/3)·(6x + 6)','n·uⁿ⁻¹·u′'],
+    ['f′(x) = [[2·6(x + 1)||3·∛(3x² + 6x − 2)]]'],['!f′(x) = [[4(x + 1)||∛(3x² + 6x − 2)]]']],
+  'cd2-10': [['f(x) = [[2x||√(3x − 1)]] = [[2x||(3x − 1)^(1/2)]]'],
+    ['f′(x) = [[2·(3x − 1)^(1/2) − 2x·½(3x − 1)^(−1/2)·3||3x − 1]]','quociente + cadeia'],
+    ['f′(x) = [[2√(3x − 1) − 3x / √(3x − 1)||3x − 1]]'],['f′(x) = [[2(3x − 1) − 3x||(3x − 1)·√(3x − 1)]]','× √(3x − 1) em cima e embaixo'],
+    ['!f′(x) = [[3x − 2||(3x − 1)^(3/2)]]']],
+  'cd2-11': [['f(t) = √([[2t + 1||t − 1]]) = ([[2t + 1||t − 1]])^(1/2)'],
+    ['f′(t) = ½([[2t + 1||t − 1]])^(−1/2)·[[2·(t − 1) − (2t + 1)·1||(t − 1)²]]','cadeia × quociente'],
+    ['f′(t) = ½([[t − 1||2t + 1]])^(1/2)·[[−3||(t − 1)²]]','inverte a fração'],['!f′(t) = [[−3||2(t − 1)²]]·√([[t − 1||2t + 1]])']],
+  'cd2-12': [['f(x) = [[1||3]]e^(3 − x)'],['f′(x) = [[1||3]]e^(3 − x)·(−1)','eᵘ·u′'],['!f′(x) = −[[1||3]]e^(3 − x)']]
+};
+Object.keys(WB).forEach(k => { const [l, n] = k.split('-'); TRIG[l].qs.find(q => q.n === +n).wb = WB[k]; });
+const wbM = s => E(s).replace(/\^\(([^()]*)\)/g, '<sup>$1</sup>').replace(/_([^_]+)_/g, '<u>$1</u>')
+  .replace(/\[\[(.+?)\|\|(.+?)\]\]/g, '<span class="wf"><span>$1</span><span>$2</span></span>');
+const wbHTML = q => `<section class="wb rv"><div class="wr">Regra: ${E(q.its[0].ideia)}</div>
+  ${q.wb.map(([m, n]) => `<div class="wl"><span class="${m[0] === '!' ? 'wbox' : ''}">${wbM(m.replace(/^!/, ''))}</span>${n ? `<span class="wn">← ${E(n)}</span>` : ''}</div>`).join('')}</section>`;
 const trigKey = (l, n) => `trig${l}-${n}`;
 const trigDone = l => { const pr = store.get(); return TRIG[l].qs.filter(q => pr[trigKey(l, q.n)]).length; };
 const tLbl = l => TRIG[l].lbl || 'Lista ' + l.replace(/(\d)(\d)/, '$1.$2');
@@ -3450,7 +3515,7 @@ function trigQ(l, n){
     <h2 class="wr">Questão ${n}</h2>
     <div class="stmt rv">${E(q.st)}</div>
   </section>
-  ${q.its.map(it => `<section class="notebook tq rv">
+  ${L.calc && q.wb ? wbHTML(q) : q.its.map(it => `<section class="notebook tq rv">
     ${it.id ? `<h3>${it.id}) <span style="font-weight:400">${E(it.st)}</span></h3>` : ''}
     <div class="paper">
       ${box(L.calc ? 'Regra' : 'Ideia', `<div class="nl"><span class="m" style="font-family:var(--f-ui); font-size:1rem">${E(it.ideia)}</span></div>`)}
