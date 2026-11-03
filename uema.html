@@ -3610,21 +3610,20 @@ const CAT = {
 };
 const CRON_KEY = 'tn-cap4-cron';
 const it_ = (h, t, c, o = {}) => ({ h, t, c, ok:!!o.ok, b:!!o.b, x:!!o.x, p:!!o.p });
-const CRON_SEED = () => ({ v:2, upd:0, inicio:'2026-10-19', dias:[
-  { itens:[it_('07:30–09:30','Estudo (manhã)','est',{ok:1}), it_('10:10–11:00','Visita 8º B · Prod. AC · George','prat',{ok:1,b:1}), it_('13:30–15:10','Cálculo Diferencial · Sergio','calc',{ok:1}), it_('15:10–16:50','Prática Curricular na Dimensão Educacional · Mara','prat',{ok:1}), it_('16:50–18:30','Teoria dos Números · Nilson','tn',{ok:1}), it_('19:30–21:00','Estudo leve / revisão','est',{ok:1})] },
-  { itens:[it_('07:30–08:30','Estudo (manhã)','est',{ok:1}), it_('09:00–09:50','Visita 8º B · Mat · Altair','prat',{ok:1,b:1}), it_('13:00–14:00','Visita 8º B · Prat. Exp · Altair','prat',{ok:1,b:1}), it_('14:00–17:00','Evento CONTEC · UFMA','est',{ok:1,b:1}), it_('13:30–16:50','Planejamento e Mat. Fin. · sem aula','pes',{x:1}), it_('18:30–20:10','Trigonometria e Números Complexos · Olívio (dep.)','trig',{ok:1})] },
-  { itens:[it_('08:00–09:50','Visita 8º B · Mat · Altair','prat',{ok:1,b:1}), it_('10:00–11:30','Estudo (manhã)','est'), it_('11:30–12:30','Lista de Teoria dos Números · Q14, 16, 18','tn',{p:1}), it_('13:30–15:10','Cálculo Diferencial · Sergio','calc'), it_('15:10–16:50','Metodologia do EM · Wemerson','met'), it_('16:50–18:30','Planejamento e Organização da Ação Pedagógica · Rafael','plan'), it_('19:00–21:00','Célula (igreja)','pes'), it_('21:00–22:30','Lista de Teoria dos Números · Q20, 22, 24, 26','tn',{p:1}), it_('22:30–23:30','Tarefa de Planejamento (Artigo 2) · até 23h59','plan',{p:1})] },
-  { itens:[it_('07:30–11:30','Estudo (manhã) · Lista de Teoria dos Números Q28, 30, 32, 34','tn',{p:1}), it_('13:30–15:10','Prática Curricular na Dimensão Educacional · Mara','prat'), it_('15:10–16:50','Teoria dos Números · Nilson · entrega da lista','tn',{p:1}), it_('17:30–19:30','Estudo / tarefas','est'), it_('20:20–22:00','Trigonometria e Números Complexos · Olívio (dep.)','trig')] },
-  { itens:[it_('09:00–09:50','Visita 8º B · Mat · Altair','prat',{b:1}), it_('10:00–11:30','Estudo (manhã)','est'), it_('13:30–15:10','Matemática Financeira · Olívio','fin'), it_('15:10–16:50','Metodologia do EM · Wemerson','met'), it_('19:00–20:30','Ensaio (teclado)','pes')] },
-  { itens:[it_('Manhã','Extensão (a confirmar)','est'), it_('Tarde','Livre / descanso','pes'), it_('Noite','Livre','pes')] },
+const CRON_SEED = () => ({ v:3, upd:0, inicio:'2026-11-02', dias:[
+  { itens:[it_('07:30–11:30','Estudo (manhã)','est'), it_('13:30–15:10','Cálculo Diferencial · Sergio','calc'), it_('15:10–16:50','Prática Curricular na Dimensão Educacional · Mara','prat'), it_('16:50–18:30','Teoria dos Números · Nilson','tn'), it_('19:30–21:00','Estudo leve / revisão','est')] },
+  { itens:[it_('07:30–11:30','Estudo (manhã)','est'), it_('13:30–15:10','Prática Curricular · Mara (troca: no horário de Planejamento, Rafael viajando)','prat',{b:1}), it_('15:10–16:50','Matemática Financeira · Olívio','fin'), it_('18:30–20:10','Trigonometria e Números Complexos · Olívio (dep.)','trig')] },
+  { itens:[it_('07:30–11:30','Estudo (manhã)','est'), it_('13:30–15:10','Cálculo Diferencial · Sergio','calc'), it_('15:10–16:50','Metodologia do EM · Wemerson','met'), it_('16:50–18:30','Prática Curricular · Mara (troca: no horário de Planejamento, Rafael viajando)','prat',{b:1}), it_('19:00–21:00','Célula (igreja)','pes'), it_('21:00–22:30','Estudo leve / revisão','est')] },
+  { itens:[it_('07:30–11:30','Estudo (manhã)','est'), it_('13:30–15:10','Prática Curricular na Dimensão Educacional · Mara','prat'), it_('15:10–16:50','Teoria dos Números · Nilson','tn'), it_('17:30–19:30','Estudo / tarefas','est'), it_('20:20–22:00','Trigonometria e Números Complexos · Olívio (dep.)','trig')] },
+  { itens:[it_('07:30–11:30','Estudo (manhã)','est'), it_('13:30–15:10','Matemática Financeira · Olívio','fin'), it_('15:10–16:50','Metodologia do EM · Wemerson','met'), it_('19:00–20:30','Ensaio (teclado)','pes')] },
+  { itens:[it_('Manhã','Estudo / extensão','est'), it_('Tarde','Livre / descanso','pes'), it_('Noite','Livre','pes')] },
   { itens:[it_('Manhã','Limpeza do prédio (se houver)','pes'), it_('15:00–16:00','Planejar a semana','est',{b:1}), it_('16:00–17:00','Estudo leve (se precisar)','est'), it_('18:30–21:00','Culto','pes')] }
 ], lembrar:Array.from({ length:6 }, () => ({ t:'', c:'', imp:'' })) });
 const cronGet = () => {
   let v = null; try{ v = JSON.parse(localStorage.getItem(CRON_KEY)); }catch(e){}
-  if(v && v.dias && v.v === 2) return v;
+  if(v && v.dias && v.v === 3) return v;
   const n = CRON_SEED();
   if(v && v.dias){ // versão antiga: aproveita os ✓ e o "Lembrar"
-    v.dias.forEach((d, i) => d.itens.forEach(o => { const m = n.dias[i] && n.dias[i].itens.find(x => x.h === o.h && x.t.split(' · ')[0] === o.t.split(' · ')[0]); if(m && o.ok) m.ok = true; }));
     if(v.lembrar) n.lembrar = v.lembrar; n.upd = Date.now(); try{ localStorage.setItem(CRON_KEY, JSON.stringify(n)); }catch(e){}
   }
   return n;
