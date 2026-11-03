@@ -554,6 +554,7 @@ text.al.fade{animation:fade .6s .5s ease both}
 .qd-ans{font-family:var(--f-math); font-size:1.18rem; font-weight:600; color:var(--chalk-y); border:2px solid var(--chalk-y); border-radius:6px; padding:2px 10px}
 .qd-end{font-size:1.1rem; color:var(--chalk)}
 .qd sub{font-size:.7em}
+.mgrp{font-family:var(--f-ui); font-size:16px; font-weight:700; margin:20px 0 10px; color:var(--ink)}
 /* quadro mais largo que a tela: avisa que dá para arrastar para o lado */
 .tem-mais{box-shadow:inset -16px 0 12px -12px rgba(31,85,184,.55) !important}
 .arraste{font-family:var(--f-ui); font-size:12px; font-weight:600; color:#1f55b8; background:rgba(31,85,184,.1); border-radius:99px; padding:3px 10px; margin:4px 0 6px; display:inline-block; animation:arr 1.6s ease-in-out infinite}
@@ -3235,6 +3236,10 @@ function notasBind(id){
       const n = notas.one(id, nid); if(n){ n.del = true; notas.save(id, n); } disc(id); };
   });
 }
+// separa os materiais por grupo (ex.: listas para entregar × listas do professor), na ordem em que foram cadastrados
+const mGrupos = (lista, mats) => [...new Set(lista.map(m => m.grp || ''))]
+  .sort((a, b) => mats.findIndex(m => (m.grp || '') === a) - mats.findIndex(m => (m.grp || '') === b))
+  .map(g => [g, lista.filter(m => (m.grp || '') === g)]);
 function disc(id){
   leave(); curView = 'disc'; curD = id;
   const d = DISC.find(x => x.id === id), mats = MATERIAIS[id] || [];
@@ -3249,8 +3254,8 @@ function disc(id){
   </section>
   <div class="chips rv" role="tablist" aria-label="Seções da disciplina">${CATS.map(([k, l, ic]) => { const n = k === 'notas' ? notas.get(id).length : mats.filter(m => m.cat === k).length;
     return `<button class="chip cat ${aba === k ? 'on' : ''}" data-cat="${k}" role="tab" aria-selected="${aba === k}">${ic} ${l}<span class="cn">${n}</span></button>`; }).join('')}</div>
-  ${aba === 'notas' ? notasHTML(id) : lista.length ? `<div class="dgrid">${lista.map(m => `<button class="mcard rv" data-m="${mats.indexOf(m)}" style="--dc:${d.cor}">
-      ${m.data ? `<span class="mdata">📅 ${E(m.data)}</span>` : ''}<span class="mt">${E(m.t)}</span><span class="ms">${E(m.sub)}</span>${m.info ? `<span class="pill go">${E(m.info())}</span>` : ''}</button>`).join('')}</div>`
+  ${aba === 'notas' ? notasHTML(id) : lista.length ? mGrupos(lista, mats).map(([g, arr]) => `${g ? `<h3 class="mgrp rv">${E(g)}</h3>` : ''}<div class="dgrid">${arr.map(m => `<button class="mcard rv" data-m="${mats.indexOf(m)}" style="--dc:${d.cor}">
+      ${m.data ? `<span class="mdata">📅 ${E(m.data)}</span>` : ''}<span class="mt">${E(m.t)}</span><span class="ms">${E(m.sub)}</span>${m.info ? `<span class="pill go">${E(m.info())}</span>` : ''}</button>`).join('')}</div>`).join('')
     : `<div class="emptybox rv">${CAT_VAZIO[aba]}</div>`}`;
   stagger(view);
   view.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { const o = prefs.get().abas || {}; o[id] = b.dataset.cat; prefs.set({ abas:o }); disc(id); });
@@ -3644,8 +3649,10 @@ const wbHTML = q => `<section class="wb rv"><div class="wr">Regra: ${wbM(wbRule(
   ${q.wb.map(([m, n]) => `<div class="wl"><span class="${m[0] === '!' ? 'wbox' : ''}">${wbM(m.replace(/^!/, ''))}</span>${n ? `<span class="wn">← ${wbM(n)}</span>` : ''}</div>`).join('')}</section>`;
 const trigKey = (l, n) => `trig${l}-${n}`;
 const trigDone = l => { const pr = store.get(); return TRIG[l].qs.filter(q => pr[trigKey(l, q.n)]).length; };
+TRIG.cd1.grp = TRIG.cd2.grp = '📌 Para entregar · 04/11';
+['cd3', 'cd4', 'cd5'].forEach(k => TRIG[k].grp = '📚 Listas do Prof. Sergio');
 const tLbl = l => TRIG[l].lbl || 'Lista ' + l.replace(/(\d)(\d)/, '$1.$2');
-const tLink = l => ({ cat:'ex', data:TRIG[l].data, t:TRIG[l].calc ? TRIG[l].t : 'Lista ' + TRIG[l].t, sub:TRIG[l].sub + ' · resolvida', go:() => trigList(l), info:() => `${trigDone(l)} de ${TRIG[l].qs.length} concluídas` });
+const tLink = l => ({ grp:TRIG[l].grp, cat:'ex', data:TRIG[l].data, t:TRIG[l].calc ? TRIG[l].t : 'Lista ' + TRIG[l].t, sub:TRIG[l].sub + ' · resolvida', go:() => trigList(l), info:() => `${trigDone(l)} de ${TRIG[l].qs.length} concluídas` });
 (MATERIAIS.calc = MATERIAIS.calc || []).push(...Object.keys(TRIG).filter(l => TRIG[l].disc === 'calc').map(tLink));
 MATERIAIS.trig = Object.keys(TRIG).filter(l => !TRIG[l].disc).map(l => ({ cat:'ex', data:TRIG[l].data, t:'Lista ' + TRIG[l].t, sub:TRIG[l].sub + ' · resolvida', go:() => trigList(l), info:() => `${trigDone(l)} de ${TRIG[l].qs.length} concluídas` }));
 function trigList(l){
