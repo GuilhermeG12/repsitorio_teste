@@ -3683,7 +3683,7 @@ function cron(){
         <button class="cck" aria-pressed="${x.ok}" aria-label="Marcar como feito">${x.ok ? '✓' : ''}</button>
         <span class="ch">${E(x.h)}</span>
         <i class="cvbar"></i>
-        <span class="ct ${x.b ? 'b' : ''}">${E(x.t).replace(/\b(Sergio|Mara|Nilson|Rafael|Olívio|Wemerson|George|Altair)\b/g, '<span class="prof">$1</span>')}</span>
+        <span class="ct ${x.b ? 'b' : ''}"${mat && DISC.some(d => d.id === x.c) ? ` data-disc="${x.c}" role="link" title="Abrir a disciplina" style="cursor:pointer"` : ''}>${E(x.t).replace(/\b(Sergio|Mara|Nilson|Rafael|Olívio|Wemerson|George|Altair)\b/g, '<span class="prof">$1</span>')}</span>
         <button class="cstar" aria-pressed="${x.p}" aria-label="Marcar como prioridade" title="Prioridade">${x.p ? '★' : '☆'}</button></li>`; }).join('')}</ul>
       <footer><div class="cpri"><span class="prl">Prioridades</span>${pris.length ? pris.map(x => `<span class="pchip ${x.ok ? 'ok' : ''}" style="--cc:${(CAT[x.c] || CAT.est).c}">${x.ok ? '✓ ' : '★ '}${E(x.t.split(' · ')[0] === 'Estudo (manhã)' ? x.t : x.t)}</span>`).join('') : '<span class="pnone">toque na ☆ de uma atividade para marcar como prioridade</span>'}</div></footer>
     </section>`; };
@@ -3705,6 +3705,7 @@ function cron(){
   marcarAgora();
   view.querySelectorAll('.cck').forEach(b => b.onclick = () => { const s2 = cronGet(), x = s2.dias[day(b)].itens[+b.closest('.ci').dataset.j]; x.ok = !x.ok; cronSave(s2); cron(); });
   view.querySelectorAll('.cstar').forEach(b => b.onclick = () => { const s2 = cronGet(), x = s2.dias[day(b)].itens[+b.closest('.ci').dataset.j]; x.p = !x.p; cronSave(s2); cron(); });
+  view.querySelectorAll('.ct[data-disc]').forEach(s => s.onclick = () => disc(s.dataset.disc));
   const ks = Object.keys(CAT), imps = ['!', '!!', '!!!'];
   view.querySelectorAll('.lrows li').forEach(li => { const k = +li.dataset.k;
     li.querySelector('.ldot').onclick = () => { const s2 = cronGet(), l = s2.lembrar[k]; l.c = ks[(ks.indexOf(l.c) + 1) % ks.length]; cronSave(s2); cron(); };
