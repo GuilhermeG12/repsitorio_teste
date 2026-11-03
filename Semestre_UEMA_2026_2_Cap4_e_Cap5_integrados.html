@@ -98,6 +98,16 @@ h1{font-family:var(--f-math); font-weight:600; font-size:clamp(1.9rem, 5vw, 2.8r
 .dsched{font-size:14px; color:var(--ink); font-variant-numeric:tabular-nums}
 .dtime{font-size:15px; font-weight:700; color:var(--dc); font-variant-numeric:tabular-nums}
 .dmat{font-size:13.5px; font-weight:600; color:var(--ink); margin-top:auto; padding-top:6px; border-top:1px dashed var(--line)}
+
+.notas{display:grid; gap:12px}
+.nnew, .ncard{display:grid; gap:8px; background:linear-gradient(160deg, var(--surface2), var(--surface)); border:1px solid var(--line); border-radius:12px; padding:14px}
+.nin, .nta, #ndt{box-sizing:border-box; background:var(--soft); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:9px; font:inherit}
+.nin, .nta{width:100%}
+.nta{resize:vertical; min-height:80px; line-height:1.5}
+.nlbl{font-size:13px; color:var(--muted)}
+.ncard header{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.nact{display:flex; justify-content:space-between; align-items:center; gap:8px}
+.nsalvo{font-size:12px; color:var(--muted)}
 @media (max-width:600px){
   .dgrid{grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px}
   .dcard, .mcard{padding:12px; gap:5px}
@@ -632,6 +642,8 @@ function mergeVal(k, a, b){
     const u = (x, y) => [...new Set([...(x || []), ...(y || [])])];
     return { ...a, ...b, seen:u(a.seen, b.seen), voiced:u(a.voiced, b.voiced), max:Math.max(a.max || 0, b.max || 0), nbVoiced:!!(a.nbVoiced || b.nbVoiced) };
   }
+  if(k.startsWith('tn-cap4-notas-')){ const m = {}; [...(a.itens || []), ...(b.itens || [])].forEach(n => { if(!m[n.id] || (n.upd || 0) > (m[n.id].upd || 0)) m[n.id] = n; });
+    return { upd:Math.max(a.upd || 0, b.upd || 0), itens:Object.values(m) }; }
   if(a && b && typeof a === 'object' && typeof b === 'object' && ('upd' in a || 'upd' in b)) return (b.upd || 0) >= (a.upd || 0) ? b : a;
   return b;
 }
@@ -693,7 +705,7 @@ function cloudSnapshot(snap){
   try{ Object.keys(remote).forEach(k => localStorage.setItem(k, JSON.stringify(mergeVal(k, remote[k], local[k])))); }catch(e){}
   const after = canon(localState());
   SYNC.state = 'ok'; syncBadge();
-  if(after !== before){ renderProg(); if(curView === 'home') home(); else if(curView === 'question') question(curQ); else if(curView === 'hub') hub(); else if(curView === 'disc') disc(curD); else if(curView === 'cron' && !$('#view').contains(document.activeElement)) cron(); }
+  if(after !== before){ renderProg(); if(curView === 'home') home(); else if(curView === 'question') question(curQ); else if(curView === 'hub') hub(); else if(curView === 'disc' && !view.contains(document.activeElement)) disc(curD); else if(curView === 'cron' && !$('#view').contains(document.activeElement)) cron(); }
   if(after !== CLOUD.lastCanon) cloudPushSoon(); // este aparelho tem progresso que a nuvem ainda não tem
 }
 async function cloudStart(){
@@ -716,7 +728,7 @@ function syncBadge(){
 }
 async function syncRefresh(){
   const changed = await syncNow();
-  if(changed){ renderProg(); if(curView === 'home') home(); else if(curView === 'question') question(curQ); else if(curView === 'hub') hub(); else if(curView === 'disc') disc(curD); }
+  if(changed){ renderProg(); if(curView === 'home') home(); else if(curView === 'question') question(curQ); else if(curView === 'hub') hub(); else if(curView === 'disc' && !view.contains(document.activeElement)) disc(curD); }
 }
 let curView = 'hub', curQ = null, curD = null, CAP = 4;
 const CPRE = (c = CAP) => c === 5 ? 'c5-' : c === 6 ? 'l10-' : '';
@@ -3095,11 +3107,43 @@ function hub(){
   $('#toCron').onclick = () => cron(); tickClock();
   window.scrollTo(0, 0);
 }
-const CATS = [['ex','Exercícios','✏️'], ['mat','Estudo · Materiais','📚'], ['prov','Estudo · Provas','📝']];
+const CATS = [['ex','Exercícios','✏️'], ['mat','Estudo · Materiais','📚'], ['prov','Estudo · Provas','📝'], ['notas','Anotações','🗒️']];
 const CAT_VAZIO = { ex:'Nenhuma lista ainda. Quando você me mandar uma lista de exercícios, ela aparece aqui resolvida, com a data em que você mandou.',
   mat:'Nenhum material ainda. Textos, artigos, resumos e PDFs que você me mandar desta disciplina ficam aqui.',
   prov:'Nenhuma prova ainda. Provas antigas, revisões e simulados desta disciplina ficam aqui.' };
 const dataNum = t => { if(!t) return 0; const [dd, mm] = t.split('/').map(Number); return mm * 100 + dd; };
+/* ---------- anotações das aulas (por disciplina) ---------- */
+const notas = {
+  key: id => 'tn-cap4-notas-' + id,
+  raw(id){ try{ return JSON.parse(localStorage.getItem(notas.key(id))) || { itens:[] }; }catch(e){ return { itens:[] }; } },
+  get(id){ return notas.raw(id).itens.filter(n => !n.del).sort((a, b) => (b.dt || '').localeCompare(a.dt || '') || (b.cr || 0) - (a.cr || 0)); },
+  save(id, n){ const r = notas.raw(id), i = r.itens.findIndex(x => x.id === n.id); n.upd = Date.now(); if(i >= 0) r.itens[i] = n; else r.itens.push(n);
+    r.upd = Date.now(); try{ localStorage.setItem(notas.key(id), JSON.stringify(r)); }catch(e){} pushSoon(); }
+};
+function notasHTML(id){
+  const ns = notas.get(id);
+  return `<div class="notas rv">
+    <div class="nnew"><label class="nlbl">Nova anotação · <input type="date" id="ndt" value="${hojeISO()}"></label>
+      <input id="ntit" class="nin" placeholder="Título (ex.: Aula sobre observação)">
+      <textarea id="ntx" class="nta" rows="5" placeholder="O que teve na aula…"></textarea>
+      <button class="ubtn primary" id="nadd">Salvar anotação</button></div>
+    ${ns.length ? ns.map(n => `<article class="ncard" data-n="${n.id}"><header><span class="mdata">📅 ${E((n.dt || '').split('-').reverse().join('/'))}</span><b>${E(n.ti || 'Anotação')}</b></header>
+      <textarea class="nta" rows="${Math.min(14, Math.max(3, (n.t || '').split('\n').length + 1))}">${E(n.t || '')}</textarea>
+      <div class="nact"><span class="nsalvo">editar aqui salva sozinho</span><button class="ubtn ndel">Apagar</button></div></article>`).join('')
+      : '<div class="emptybox">Nenhuma anotação ainda. Escreva acima o que teve na aula.</div>'}
+  </div>`;
+}
+function notasBind(id){
+  $('#nadd').onclick = () => { const tx = $('#ntx').value.trim(), ti = $('#ntit').value.trim(); if(!tx && !ti) return;
+    notas.save(id, { id:Date.now().toString(36) + Math.random().toString(36).slice(2, 6), dt:$('#ndt').value || hojeISO(), ti, t:tx, cr:Date.now() });
+    disc(id); toast('Anotação salva'); };
+  view.querySelectorAll('.ncard').forEach(c => { const nid = c.dataset.n, ta = c.querySelector('textarea'), st = c.querySelector('.nsalvo'); let tm = null;
+    ta.oninput = () => { st.textContent = 'salvando…'; clearTimeout(tm); tm = setTimeout(() => { const n = notas.raw(id).itens.find(x => x.id === nid); if(n){ n.t = ta.value; notas.save(id, n); } st.textContent = 'salvo ✓'; }, 600); };
+    const del = c.querySelector('.ndel'); let arm = false;
+    del.onclick = () => { if(!arm){ arm = true; del.textContent = 'Toque de novo para apagar'; return; }
+      const n = notas.raw(id).itens.find(x => x.id === nid); if(n){ n.del = true; notas.save(id, n); } disc(id); };
+  });
+}
 function disc(id){
   leave(); curView = 'disc'; curD = id;
   const d = DISC.find(x => x.id === id), mats = MATERIAIS[id] || [];
@@ -3112,14 +3156,15 @@ function disc(id){
     <p class="lede rv" style="color:var(--dc); font-weight:700">Prof. ${E(d.prof)}${d.obs ? ` · ${E(d.obs)}` : ''}</p>
     <div class="sched rv">${d.aulas.map(a => `<span class="pill">${SEM[a[0]]} · ${a[1]} – ${a[2]}</span>`).join('')}</div>
   </section>
-  <div class="chips rv" role="tablist" aria-label="Seções da disciplina">${CATS.map(([k, l, ic]) => { const n = mats.filter(m => m.cat === k).length;
+  <div class="chips rv" role="tablist" aria-label="Seções da disciplina">${CATS.map(([k, l, ic]) => { const n = k === 'notas' ? notas.get(id).length : mats.filter(m => m.cat === k).length;
     return `<button class="chip cat ${aba === k ? 'on' : ''}" data-cat="${k}" role="tab" aria-selected="${aba === k}">${ic} ${l}<span class="cn">${n}</span></button>`; }).join('')}</div>
-  ${lista.length ? `<div class="dgrid">${lista.map(m => `<button class="mcard rv" data-m="${mats.indexOf(m)}" style="--dc:${d.cor}">
+  ${aba === 'notas' ? notasHTML(id) : lista.length ? `<div class="dgrid">${lista.map(m => `<button class="mcard rv" data-m="${mats.indexOf(m)}" style="--dc:${d.cor}">
       ${m.data ? `<span class="mdata">📅 ${E(m.data)}</span>` : ''}<span class="mt">${E(m.t)}</span><span class="ms">${E(m.sub)}</span>${m.info ? `<span class="pill go">${E(m.info())}</span>` : ''}</button>`).join('')}</div>`
     : `<div class="emptybox rv">${CAT_VAZIO[aba]}</div>`}`;
   stagger(view);
   view.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { const o = prefs.get().abas || {}; o[id] = b.dataset.cat; prefs.set({ abas:o }); disc(id); });
   view.querySelectorAll('[data-m]').forEach(b => b.onclick = () => mats[+b.dataset.m].go());
+  if(aba === 'notas') notasBind(id);
   window.scrollTo(0, 0);
 }
 
