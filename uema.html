@@ -108,6 +108,18 @@ h1{font-family:var(--f-math); font-weight:600; font-size:clamp(1.9rem, 5vw, 2.8r
 .ncard header{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
 .nact{display:flex; justify-content:space-between; align-items:center; gap:8px}
 .nsalvo{font-size:12px; color:var(--muted)}
+.ncard summary{display:flex; gap:10px; align-items:center; flex-wrap:wrap; cursor:pointer; list-style:none}
+.ncard summary::-webkit-details-marker{display:none}
+.ncard[open] summary{margin-bottom:6px}
+.nfl{display:grid; gap:5px; font-size:13px; font-weight:600; color:var(--dc, var(--muted))}
+.nfotos{display:flex; flex-wrap:wrap; gap:8px}
+.nfoto, .nadd{width:92px; height:92px; border-radius:10px; border:1px dashed var(--line); background:var(--soft); display:grid; place-items:center; overflow:hidden; padding:0; color:var(--muted); cursor:pointer}
+.nfoto img{width:100%; height:100%; object-fit:cover}
+.nadd{font-size:22px; text-align:center; line-height:1.1}
+.nadd span{display:block; font-size:11px}
+.nload{font-size:11px}
+.nview{position:fixed; inset:0; z-index:9999; background:#000d; display:grid; place-items:center; gap:10px; padding:12px}
+.nview img{max-width:100%; max-height:85vh; border-radius:8px}
 @media (max-width:600px){
   .dgrid{grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px}
   .dcard, .mcard{padding:12px; gap:5px}
@@ -3112,36 +3124,72 @@ const CAT_VAZIO = { ex:'Nenhuma lista ainda. Quando você me mandar uma lista de
   mat:'Nenhum material ainda. Textos, artigos, resumos e PDFs que você me mandar desta disciplina ficam aqui.',
   prov:'Nenhuma prova ainda. Provas antigas, revisões e simulados desta disciplina ficam aqui.' };
 const dataNum = t => { if(!t) return 0; const [dd, mm] = t.split('/').map(Number); return mm * 100 + dd; };
-/* ---------- anotações das aulas (por disciplina) ---------- */
+/* ---------- anotações das aulas (ficha por aula, com fotos do quadro) ---------- */
 const notas = {
   key: id => 'tn-cap4-notas-' + id,
   raw(id){ try{ return JSON.parse(localStorage.getItem(notas.key(id))) || { itens:[] }; }catch(e){ return { itens:[] }; } },
   get(id){ return notas.raw(id).itens.filter(n => !n.del).sort((a, b) => (b.dt || '').localeCompare(a.dt || '') || (b.cr || 0) - (a.cr || 0)); },
+  one(id, nid){ return notas.raw(id).itens.find(x => x.id === nid); },
   save(id, n){ const r = notas.raw(id), i = r.itens.findIndex(x => x.id === n.id); n.upd = Date.now(); if(i >= 0) r.itens[i] = n; else r.itens.push(n);
     r.upd = Date.now(); try{ localStorage.setItem(notas.key(id), JSON.stringify(r)); }catch(e){} pushSoon(); }
 };
+const NCAMPOS = [['tema','Tema da aula','Ex.: Livro didático, BNCC e plano de ensino',1], ['obj','Objetivos da aula','O que a aula quis alcançar…',3],
+  ['anot','O que o professor apresentou / fez','Anote do jeito que o professor explicou…',6], ['resumo','Apanhado geral','No final: um resumo do que ficou da aula…',4]];
+const nVal = (n, k) => k === 'tema' ? (n.tema ?? n.ti ?? '') : k === 'anot' ? (n.anot ?? n.t ?? '') : (n[k] || '');
+const FOTO_API = p => 'https://api.github.com/repos/GuilhermeG12/uema-dados/contents/' + p;
+const fotoCache = {};
+async function fotoURL(p){
+  if(fotoCache[p]) return fotoCache[p];
+  const r = await fetch(FOTO_API(p), { headers:{ ...ghH(), Accept:'application/vnd.github.raw' } }); if(!r.ok) throw new Error(r.status);
+  return fotoCache[p] = URL.createObjectURL(await r.blob());
+}
+async function fotoUp(id, nid, file){
+  if(!ghTok()) throw new Error('Ative a sincronização (chave do GitHub) para guardar fotos.');
+  const bmp = await createImageBitmap(file), k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+  const cv = document.createElement('canvas'); cv.width = Math.round(bmp.width * k); cv.height = Math.round(bmp.height * k);
+  cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
+  const b64 = cv.toDataURL('image/jpeg', 0.82).split(',')[1], p = `fotos/${id}/${nid}-${Date.now()}.jpg`;
+  const r = await fetch(FOTO_API(p), { method:'PUT', headers:ghH(), body:JSON.stringify({ message:'foto ' + p, content:b64 }) }); if(!r.ok) throw new Error('Falha ao enviar (' + r.status + ')');
+  fotoCache[p] = cv.toDataURL('image/jpeg', 0.82);
+  const n = notas.one(id, nid); (n.fotos = n.fotos || []).push({ p }); notas.save(id, n);
+}
 function notasHTML(id){
   const ns = notas.get(id);
   return `<div class="notas rv">
-    <div class="nnew"><label class="nlbl">Nova anotação · <input type="date" id="ndt" value="${hojeISO()}"></label>
-      <input id="ntit" class="nin" placeholder="Título (ex.: Aula sobre observação)">
-      <textarea id="ntx" class="nta" rows="5" placeholder="O que teve na aula…"></textarea>
-      <button class="ubtn primary" id="nadd">Salvar anotação</button></div>
-    ${ns.length ? ns.map(n => `<article class="ncard" data-n="${n.id}"><header><span class="mdata">📅 ${E((n.dt || '').split('-').reverse().join('/'))}</span><b>${E(n.ti || 'Anotação')}</b></header>
-      <textarea class="nta" rows="${Math.min(14, Math.max(3, (n.t || '').split('\n').length + 1))}">${E(n.t || '')}</textarea>
-      <div class="nact"><span class="nsalvo">editar aqui salva sozinho</span><button class="ubtn ndel">Apagar</button></div></article>`).join('')
-      : '<div class="emptybox">Nenhuma anotação ainda. Escreva acima o que teve na aula.</div>'}
+    <div class="nnew"><label class="nlbl">Nova aula · <input type="date" id="ndt" value="${hojeISO()}"></label>
+      <input id="ntit" class="nin" placeholder="Tema da aula (ex.: Livro didático e BNCC)">
+      <button class="ubtn primary" id="nadd">Criar anotação da aula</button></div>
+    ${ns.length ? ns.map((n, i) => `<details class="ncard" data-n="${n.id}" ${i === 0 ? 'open' : ''}>
+      <summary><span class="mdata">📅 ${E((n.dt || '').split('-').reverse().join('/'))}</span><b>${E(nVal(n, 'tema') || 'Aula')}</b></summary>
+      ${NCAMPOS.map(([k, l, ph, rows]) => `<label class="nfl">${l}${k === 'tema' ? `<input class="nin" data-k="${k}" value="${E(nVal(n, k))}" placeholder="${ph}">`
+        : `<textarea class="nta" data-k="${k}" rows="${Math.max(rows, Math.min(14, nVal(n, k).split('\n').length + 1))}" placeholder="${ph}">${E(nVal(n, k))}</textarea>`}</label>`
+        + (k === 'anot' ? `<div class="nfl">Fotos do quadro<div class="nfotos">${(n.fotos || []).map((f, j) => `<button class="nfoto" data-j="${j}" data-p="${E(f.p)}"><span class="nload">…</span></button>`).join('')}
+          <label class="nadd">📷<span>Adicionar foto</span><input type="file" accept="image/*" multiple hidden></label></div></div>` : '')).join('')}
+      <div class="nact"><span class="nsalvo">tudo aqui salva sozinho</span><button class="ubtn ndel">Apagar aula</button></div></details>`).join('')
+      : '<div class="emptybox">Nenhuma anotação ainda. Crie acima a anotação da aula.</div>'}
   </div>`;
 }
+function fotoVer(src){
+  const o = document.createElement('div'); o.className = 'nview'; o.innerHTML = `<img src="${src}" alt="Foto do quadro"><button class="ubtn">Fechar</button>`;
+  o.onclick = () => o.remove(); document.body.appendChild(o);
+}
 function notasBind(id){
-  $('#nadd').onclick = () => { const tx = $('#ntx').value.trim(), ti = $('#ntit').value.trim(); if(!tx && !ti) return;
-    notas.save(id, { id:Date.now().toString(36) + Math.random().toString(36).slice(2, 6), dt:$('#ndt').value || hojeISO(), ti, t:tx, cr:Date.now() });
-    disc(id); toast('Anotação salva'); };
-  view.querySelectorAll('.ncard').forEach(c => { const nid = c.dataset.n, ta = c.querySelector('textarea'), st = c.querySelector('.nsalvo'); let tm = null;
-    ta.oninput = () => { st.textContent = 'salvando…'; clearTimeout(tm); tm = setTimeout(() => { const n = notas.raw(id).itens.find(x => x.id === nid); if(n){ n.t = ta.value; notas.save(id, n); } st.textContent = 'salvo ✓'; }, 600); };
+  $('#nadd').onclick = () => { const ti = $('#ntit').value.trim();
+    notas.save(id, { id:Date.now().toString(36) + Math.random().toString(36).slice(2, 6), dt:$('#ndt').value || hojeISO(), tema:ti, obj:'', anot:'', resumo:'', fotos:[], cr:Date.now() });
+    disc(id); toast('Anotação da aula criada'); };
+  view.querySelectorAll('.ncard').forEach(c => { const nid = c.dataset.n, st = c.querySelector('.nsalvo'); let tm = null;
+    c.querySelectorAll('[data-k]').forEach(el => el.oninput = () => { st.textContent = 'salvando…'; clearTimeout(tm);
+      tm = setTimeout(() => { const n = notas.one(id, nid); if(!n) return; c.querySelectorAll('[data-k]').forEach(x => { n[x.dataset.k] = x.value; }); delete n.ti; delete n.t;
+        notas.save(id, n); st.textContent = 'salvo ✓'; if(el.dataset.k === 'tema') c.querySelector('summary b').textContent = el.value || 'Aula'; }, 600); });
+    c.querySelectorAll('.nfoto').forEach(b => { fotoURL(b.dataset.p).then(u => { b.innerHTML = `<img src="${u}" alt="Foto do quadro">`; b.onclick = () => fotoVer(u); })
+      .catch(() => { b.innerHTML = '<span class="nload">sem internet</span>'; }); });
+    const inp = c.querySelector('input[type=file]');
+    inp.onchange = async () => { const fs = [...inp.files]; if(!fs.length) return; st.textContent = `enviando ${fs.length} foto(s)…`;
+      try{ for(const fl of fs) await fotoUp(id, nid, fl); toast('Foto guardada'); disc(id); }
+      catch(e){ st.textContent = e.message; toast(e.message); } };
     const del = c.querySelector('.ndel'); let arm = false;
     del.onclick = () => { if(!arm){ arm = true; del.textContent = 'Toque de novo para apagar'; return; }
-      const n = notas.raw(id).itens.find(x => x.id === nid); if(n){ n.del = true; notas.save(id, n); } disc(id); };
+      const n = notas.one(id, nid); if(n){ n.del = true; notas.save(id, n); } disc(id); };
   });
 }
 function disc(id){
