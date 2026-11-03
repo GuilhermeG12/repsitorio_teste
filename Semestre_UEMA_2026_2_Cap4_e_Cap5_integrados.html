@@ -3381,11 +3381,11 @@ function trigCirc(c){
     <circle cx="${X}" cy="${Y}" r="${R}" fill="none" stroke="${ink}" stroke-width="1.6"/>`;
   c.ms.forEach(([v, t]) => {
     if(c.ax === 'sen'){ const y = Y - v * R, w = Math.sqrt(Math.max(0, 1 - v * v)) * R;
-      s += `<line x1="${f(X - R - 14)}" y1="${f(y)}" x2="${f(X + R + 14)}" y2="${f(y)}" stroke="${ink}" stroke-dasharray="4 4" opacity=".55"/><text x="${X + 5}" y="${f(y - 4)}" font-size="12" fill="${V}">${t}</text>`; }
+      s += `<line x1="${f(X - R - 14)}" y1="${f(y)}" x2="${f(X + R + 14)}" y2="${f(y)}" stroke="${ink}" stroke-dasharray="4 4" opacity=".55"/><text x="${X + 5}" y="${f(y - 4)}" font-size="12" fill="${V}" stroke="#eaf4f0" stroke-width="4" stroke-linejoin="round" paint-order="stroke">${t}</text>`; }
     else if(c.ax === 'cos'){ const x = X + v * R;
-      s += `<line x1="${f(x)}" y1="${Y - R - 14}" x2="${f(x)}" y2="${Y + R + 14}" stroke="${ink}" stroke-dasharray="4 4" opacity=".55"/><text x="${f(x + 4)}" y="${Y + 15}" font-size="12" fill="${V}">${t}</text>`; }
+      s += `<line x1="${f(x)}" y1="${Y - R - 14}" x2="${f(x)}" y2="${Y + R + 14}" stroke="${ink}" stroke-dasharray="4 4" opacity=".55"/><text x="${f(x + 4)}" y="${Y + 15}" font-size="12" fill="${V}" stroke="#eaf4f0" stroke-width="4" stroke-linejoin="round" paint-order="stroke">${t}</text>`; }
     else { const y = Y - v * R, d = Math.atan(v) * 180 / Math.PI, [ax, ay] = P(d + 180);
-      s += `<line x1="${f(ax)}" y1="${f(ay)}" x2="${X + R}" y2="${f(y)}" stroke="${ink}" stroke-dasharray="4 4" opacity=".55"/><circle cx="${X + R}" cy="${f(y)}" r="3" fill="${V}"/><text x="${X + R + 8}" y="${f(y + 4)}" font-size="12" fill="${V}">${t}</text>`; }
+      s += `<line x1="${f(ax)}" y1="${f(ay)}" x2="${X + R}" y2="${f(y)}" stroke="${ink}" stroke-dasharray="4 4" opacity=".55"/><circle cx="${X + R}" cy="${f(y)}" r="3" fill="${V}"/><text x="${X + R + 8}" y="${f(y + 4)}" font-size="12" fill="${V}" stroke="#eaf4f0" stroke-width="4" stroke-linejoin="round" paint-order="stroke">${t}</text>`; }
   });
   if(c.ax === 'tg') s += `<line x1="${X + R}" y1="${Y - R - 70}" x2="${X + R}" y2="${Y + R + 70}" stroke="${ink}" stroke-width="1.4"/><text x="${X + R + 5}" y="${Y - R - 58}" font-size="12" font-style="italic" fill="${ink}">t</text>`;
   c.arcs.forEach(([a, b]) => { // divide em pedaços < 180° para o arco do SVG sair certo
@@ -3395,7 +3395,7 @@ function trigCirc(c){
   c.arcs.forEach(([a, b, fa, fb]) => [[a, fa], [b, fb]].forEach(([d, fe]) => { const [x, y] = P(d);
     s += `<circle cx="${f(x)}" cy="${f(y)}" r="5" fill="${fe ? V : '#fff'}" stroke="${V}" stroke-width="2"/>`; }));
   c.lb.forEach(([d, t]) => { const cs = Math.cos(rad(d)), dentro = c.ax === 'tg' && cs > .3, [x, y] = P(d, dentro ? R - 14 : R + 19); // no tg, os rótulos da direita vão para dentro (o eixo t ocupa o lado de fora)
-    s += `<text x="${f(x)}" y="${f(y + 4)}" font-size="13" font-weight="600" text-anchor="${dentro || cs < -.3 ? 'end' : cs > .3 ? 'start' : 'middle'}" fill="${ink}">${t}<tspan x="${f(x)}" dy="14" font-size="11" font-weight="400">${(d % 360 + 360) % 360}°</tspan></text>`; });
+    s += `<text x="${f(x + (Math.abs(cs) < .3 ? 5 : 0))}" y="${f(Math.abs(Math.sin(rad(d))) < .3 ? (dentro ? y + 16 : y - 7) : Math.sin(rad(d)) > .9 ? y - 12 : y + 4)}" font-size="13" font-weight="600" stroke="#eaf4f0" stroke-width="4" stroke-linejoin="round" paint-order="stroke" text-anchor="${dentro || cs < -.3 ? 'end' : 'start'}" fill="${ink}">${t}<tspan x="${f(x + (Math.abs(cs) < .3 ? 5 : 0))}" dy="${Math.abs(Math.sin(rad(d))) < .3 && !dentro ? 22 : 14}" font-size="11" font-weight="400">${(d % 360 + 360) % 360}°</tspan></text>`; });
   const top = c.ax === 'tg' ? Y - R - 75 : 0, alt = c.ax === 'tg' ? 2 * R + 150 : 240;
   return `<svg viewBox="0 ${top} 290 ${alt}" style="width:100%; max-width:330px; display:block; margin:4px auto; font-family:var(--f-ui)">${s}</svg>
     <div class="nl" style="justify-content:center; font-family:var(--f-ui); font-size:.85rem; opacity:.8">● fechado (entra) &nbsp; ○ aberto (não entra) &nbsp; <span style="color:${V}">━ solução</span></div>`;
