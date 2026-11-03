@@ -609,9 +609,14 @@ const ist = {
 };
 /* ---------- sincronização com o servidor do PC (PC + celular no mesmo Wi-Fi) ---------- */
 const SYNC = { state:'off', mode:null, t:null, busy:false };
-// Banco de sincronização (Firebase Realtime Database, sem login). Cole aqui a URL do seu banco:
-const FB_URL = '';   // ex.: 'https://uema2026-default-rtdb.firebaseio.com'
-const FB_DOC = () => FB_URL.replace(/\/$/, '') + '/uema2026/estado.json';
+// Sincronização pelo GitHub: arquivo progresso.json no repositório privado uema-dados.
+// A chave fica salva só neste aparelho (nunca no código do site).
+const GH_API = 'https://api.github.com/repos/GuilhermeG12/uema-dados/contents/progresso.json';
+const GH_LINK = 'https://github.com/settings/personal-access-tokens/new?name=uema-sync&description=Sincronizacao%20Uema2026.2&expires_in=none&contents=write';
+const ghTok = () => { try{ return localStorage.getItem('uema-gh-token') || ''; }catch(e){ return ''; } };
+const ghH = () => ({ Authorization:'Bearer ' + ghTok(), Accept:'application/vnd.github+json' });
+const b64e = s => btoa(unescape(encodeURIComponent(s))), b64d = s => decodeURIComponent(escape(atob(s.replace(/\s/g, ''))));
+const GH = { sha:null };
 function mergeVal(k, a, b){
   if(a == null) return b; if(b == null) return a;
   if(k === 'tn-cap4-progresso' || k === 'tn-cap4-liberado'){ const o = { ...a }; Object.keys(b).forEach(x => { if(b[x]) o[x] = true; }); return o; }
@@ -633,8 +638,9 @@ async function syncNow(){
   try{
     let server;
     if(SYNC.mode === 'fb'){
-      const r = await fetch(FB_DOC(), { cache:'no-store' }); if(!r.ok) throw new Error(r.status);
-      server = (await r.json()) || {};
+      const r = await fetch(GH_API + '?t=' + Date.now(), { headers:ghH(), cache:'no-store' });
+      if(r.status === 404){ server = {}; GH.sha = null; }
+      else { if(!r.ok) throw new Error(r.status); const j = await r.json(); GH.sha = j.sha; server = JSON.parse(b64d(j.content || '') || '{}') || {}; }
     } else {
       const r = await fetch('api/progresso', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify(localState()), cache:'no-store' });
       if(!r.ok) throw new Error(r.status);
@@ -643,7 +649,9 @@ async function syncNow(){
     const local = localState(), before = JSON.stringify(local);
     try{ Object.keys(server).forEach(k => localStorage.setItem(k, JSON.stringify(mergeVal(k, local[k], server[k])))); }catch(e){}
     if(SYNC.mode === 'fb'){ const now = localState();
-      if(canon(now) !== canon(server)){ const w = await fetch(FB_DOC(), { method:'PUT', body:JSON.stringify(now) }); if(!w.ok) throw new Error(w.status); } }
+      if(canon(now) !== canon(server)){
+        const w = await fetch(GH_API, { method:'PUT', headers:ghH(), body:JSON.stringify({ message:'sync', content:b64e(JSON.stringify(now)), ...(GH.sha ? { sha:GH.sha } : {}) }) });
+        if(!w.ok) throw new Error(w.status); GH.sha = (await w.json()).content.sha; } }
     try{ localStorage.setItem('uema-ultima-sync', new Date().toISOString()); }catch(e){}
     SYNC.state = 'ok'; syncBadge(); return JSON.stringify(localState()) !== before;
   }catch(e){ if(SYNC.state !== 'off') SYNC.state = 'erro'; syncBadge(); return false; }
@@ -4095,11 +4103,27 @@ tickClock(); setInterval(tickClock, 1000);
 hub();
 // dentro do app do Claude: sincroniza pela sua conta (PC e celular)
 cloudStart().then(ok => { if(!ok) setTimeout(cloudStart, 1500); });
-// site e app do celular: sincroniza pelo Firebase (sem login)
-if(FB_URL && !window.claude){
-  SYNC.mode = 'fb'; SYNC.state = 'ok'; syncBadge(); syncRefresh(); setInterval(syncRefresh, 5000);
+// site e app do celular: sincroniza pelo GitHub (repositório privado uema-dados)
+function ghStart(){
+  SYNC.mode = 'fb'; SYNC.state = 'ok'; syncBadge(); syncRefresh(); setInterval(syncRefresh, 15000);
   document.addEventListener('visibilitychange', () => { if(!document.hidden) syncRefresh(); });
   addEventListener('online', syncRefresh);
+}
+function ghSetup(){
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;max-width:520px;margin:auto;background:#10244a;color:#fff;border:1px solid #4da8ff;border-radius:12px;padding:14px;font:14px/1.5 system-ui,sans-serif;box-shadow:0 8px 30px #0008';
+  d.innerHTML = `<b>Ativar sincronização (só uma vez neste aparelho)</b><br>
+    1. <a href="${GH_LINK}" target="_blank" rel="noopener" style="color:#8cc6ff">Criar a chave no GitHub</a>: em <i>Repository access</i> escolha <b>Only select repositories → uema-dados</b>, confira <b>Contents: Read and write</b> e clique em <b>Generate token</b>.<br>
+    2. Copie a chave e cole aqui:
+    <input id="ghtk" style="width:100%;box-sizing:border-box;margin:8px 0;padding:9px;border-radius:8px;border:0" placeholder="github_pat_...">
+    <button id="ghok" class="ubtn primary">Salvar e sincronizar</button> <button id="ghno" class="ubtn">Agora não</button>`;
+  document.body.appendChild(d);
+  d.querySelector('#ghno').onclick = () => d.remove();
+  d.querySelector('#ghok').onclick = () => { const v = d.querySelector('#ghtk').value.trim(); if(!v) return;
+    try{ localStorage.setItem('uema-gh-token', v); }catch(e){} d.remove(); ghStart(); };
+}
+if(/^https?:$/.test(location.protocol) && location.hostname.endsWith('github.io') && !window.claude){
+  if(ghTok()) ghStart(); else ghSetup();
 }
 // aberto pelo servidor do PC: sincroniza pelo Wi-Fi
 else if(/^https?:$/.test(location.protocol)){
