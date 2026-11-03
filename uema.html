@@ -554,6 +554,10 @@ text.al.fade{animation:fade .6s .5s ease both}
 .qd-ans{font-family:var(--f-math); font-size:1.18rem; font-weight:600; color:var(--chalk-y); border:2px solid var(--chalk-y); border-radius:6px; padding:2px 10px}
 .qd-end{font-size:1.1rem; color:var(--chalk)}
 .qd sub{font-size:.7em}
+/* quadro mais largo que a tela: avisa que dá para arrastar para o lado */
+.tem-mais{box-shadow:inset -16px 0 12px -12px rgba(31,85,184,.55) !important}
+.arraste{font-family:var(--f-ui); font-size:12px; font-weight:600; color:#1f55b8; background:rgba(31,85,184,.1); border-radius:99px; padding:3px 10px; margin:4px 0 6px; display:inline-block; animation:arr 1.6s ease-in-out infinite}
+@keyframes arr{50%{transform:translateX(6px)}}
 /* Mat. Financeira no quadro branco */
 .qd, .qd-sum{background:linear-gradient(160deg,#f1f8f5 0%,#dfeee8 55%,#d4e7e0 100%); border-color:#c7ccd1; color:#1f55b8; font-family:"Itim", var(--f-hand);
   box-shadow:inset 0 0 50px rgba(255,255,255,.55), 0 6px 20px rgba(0,0,0,.3)}
@@ -4878,5 +4882,23 @@ else if(/^https?:$/.test(location.protocol)){
   });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeQuestion(); });
 })();
+
+/* ---------- quadros largos: indica que dá para arrastar para o lado ---------- */
+function marcaArraste(){
+  document.querySelectorAll('.qd-sl, .qd-blk, .qd-r, .wb').forEach(el => {
+    if(!el.offsetParent) return;
+    const mais = el.scrollWidth > el.clientWidth + 4, dica = el.nextElementSibling && el.nextElementSibling.classList.contains('arraste') ? el.nextElementSibling : null;
+    el.classList.toggle('tem-mais', mais && el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    if(mais && !dica && !el.dataset.visto){
+      el.insertAdjacentHTML('afterend', '<div class="arraste">↔ arraste para o lado para ver o resto</div>');
+      el.addEventListener('scroll', () => { el.dataset.visto = 1; const d = el.nextElementSibling; if(d && d.classList.contains('arraste')) d.remove();
+        el.classList.toggle('tem-mais', el.scrollLeft + el.clientWidth < el.scrollWidth - 4); }, { passive:true });
+    }
+    if(!mais && dica) dica.remove();
+  });
+}
+let arrT = null; const arrSoon = () => { clearTimeout(arrT); arrT = setTimeout(marcaArraste, 250); };
+new MutationObserver(arrSoon).observe(document.body, { childList:true, subtree:true });
+document.addEventListener('toggle', arrSoon, true); window.addEventListener('resize', arrSoon);
 </script>
 </body></html>
