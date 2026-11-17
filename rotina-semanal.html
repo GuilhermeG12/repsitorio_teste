@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rotina semanal · UEMA</title><style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0d1d3a;color:#fff}*{box-sizing:border-box}body{margin:0;padding:14px;display:flex;flex-direction:column;height:100svh;gap:10px}header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}h2{font-size:18px;margin:0}select{background:#153062;border:1px solid #5d80bf;color:#fff;border-radius:8px;padding:8px;font:inherit;font-size:13px}.legend{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11px}.legend span:before{content:'';display:inline-block;background:var(--c);width:9px;height:9px;border-radius:2px;margin-right:4px}.stats{font-size:12px;color:#dbe5fa;margin:0}.plot{display:flex;flex:1;min-height:230px;margin:8px 0 24px}.axis{width:26px;position:relative;flex-shrink:0;font-size:10px}.tick{position:absolute;right:6px;transform:translateY(50%)}.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px;flex:1;position:relative;isolation:isolate}.day{position:relative;min-width:0}.hour-line{position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,.25);z-index:2;pointer-events:none}.block{position:absolute;left:0;right:0;border:0;border-radius:4px;background:var(--c);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;overflow:hidden;font:inherit;font-size:10px;line-height:1.18;cursor:pointer;text-shadow:0 1px 2px #0008}.block:focus-visible{outline:3px solid #fff;outline-offset:1px;z-index:5}.block span{position:relative;z-index:3;background:var(--c);padding:0 1px;white-space:nowrap}.name{position:absolute;top:100%;width:100%;text-align:center;padding-top:7px;font-size:12px}.info{min-height:36px;font-size:12px;line-height:1.4;padding:8px 10px;border:1px solid #2c4a88;border-radius:8px;background:#10244a}.notes{font-size:11px;color:#dbe5fa}summary{cursor:pointer}details p{margin:5px 0}.details-table{width:100%;border-collapse:collapse;font-size:11px}.details-table td,.details-table th{padding:4px;text-align:left;border-bottom:1px solid #2c4a88}dialog{background:#0d1d3a;color:#fff;border:1px solid #5d80bf;border-radius:12px;max-width:min(92vw,560px);max-height:80svh}dialog::backdrop{background:#0009}dialog button{float:right;padding:6px 12px;background:#153062;color:#fff;border:1px solid #5d80bf;border-radius:6px}button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #4da8ff}@media(max-width:540px){body{padding:10px;gap:8px}.days{gap:7px}.block{font-size:9px}h2{font-size:16px}.legend{font-size:10px;gap:4px 8px}.stats{font-size:11px}.name{font-size:10px}.info{font-size:11px}.plot{margin-top:6px}}@media(max-height:650px){body{gap:6px;padding:8px}.legend{font-size:10px}.info{min-height:28px;padding:5px}.plot{min-height:180px}.notes{font-size:10px}} 
+</style></head><body>
+<header><h2>Minha rotina · 24 horas por dia</h2><select id="mode" aria-label="Visão da rotina"><option value="proposal">Proposta equilibrada</option><option value="current">Rotina atual</option></select></header>
+<div class="legend" id="legend" aria-label="Legenda de cores"></div><p class="stats" id="stats"></p>
+<div class="plot" aria-label="Rotina semanal em sete barras verticais"><div class="axis" id="axis"></div><div class="days" id="days"></div></div>
+<div class="info" id="info" aria-live="polite">Toque em um bloco para ver atividade, horário, duração e porcentagem do dia.</div>
+<div class="notes"><button id="details" style="background:transparent;border:0;color:#9acaff;cursor:pointer;font:inherit;text-decoration:underline">Ver totais por dia e critérios dos horários</button></div>
+<dialog id="summary"><button id="close" aria-label="Fechar detalhes">Fechar</button><h3>Detalhes da rotina</h3><p class="notes">Horários aproximados reproduzidos do gráfico que montamos: sono 00h–08h e 23h30–24h; terça à noite 18h30–20h10; quinta 20h–21h50. Eles podem diferir da agenda acadêmica abaixo. O gráfico é uma referência de rotina, independente dos ✓ da agenda.</p><p class="notes">Na proposta: 6h de estudo pessoal, 2h30 de atividade física, 2h20 de leitura e 1h de design/pintura por semana (11h50). O vermelho restante também precisa acomodar refeições, cuidados, tarefas, descanso e lazer. Porcentagens dos blocos usam 24h; totais semanais usam 168h. Não são medições automáticas de uso de telas.</p><table class="details-table"><thead><tr><th>Dia</th><th>Atividade</th><th>Duração</th><th>% do dia</th></tr></thead><tbody id="totals"></tbody></table></dialog>
+<script>
+(()=>{
+const cat={s:['Sono','#6b7b9a','Sono'],d:['Dispersão','#e74448','Disp.'],a:['Aula','#8c8e85','Aula'],p:['Almoço e preparo / preparo para ensaio','#b7b7ad','Prep.'],i:['Igreja','#6650d8','Igreja']};
+Object.assign(cat,{e:['Estudo pessoal','#d29427','Estudo'],l:['Leitura','#2ca575','Leitura'],f:['Atividade física','#269fae','Mov.'],c:['Design / pintura','#b66b91','Design']});
+const base=[[0,8,'s'],[8,12,'d'],[12,13.5,'p']];
+const week=[['Seg',[...base,[13.5,18.5,'a'],[18.5,23.5,'d'],[23.5,24,'s']]],['Ter',[...base,[13.5,16+50/60,'a'],[16+50/60,18.5,'d'],[18.5,20+10/60,'a'],[20+10/60,23.5,'d'],[23.5,24,'s']]],['Qua',[...base,[13.5,18.5,'a'],[18.5,19,'d'],[19,21,'i'],[21,23.5,'d'],[23.5,24,'s']]],['Qui',[...base,[13.5,16+50/60,'a'],[16+50/60,20,'d'],[20,21+50/60,'a'],[21+50/60,23.5,'d'],[23.5,24,'s']]],['Sex',[...base,[13.5,16+50/60,'a'],[16+50/60,18,'d'],[18,19,'p'],[19,21,'i'],[21,23.5,'d'],[23.5,24,'s']]],['Sáb',[[0,8,'s'],[8,23.5,'d'],[23.5,24,'s']]],['Dom',[[0,8,'s'],[8,23.5,'d'],[23.5,24,'s']]]];
+
+const proposed=week.map(([name,blocks],idx)=>{
+ const activities=idx<5?[[9,10,'e'],[10.25,10.75,'f'],[11,11+1/3,'l']]:idx===5?[[9,10,'e'],[10.25,11.25,'c'],[11.5,11.5+1/3,'l']]:[[11,11+1/3,'l']];
+ let result=blocks.map(b=>b.slice());
+ activities.forEach(([start,end,key])=>{const at=result.findIndex(([a,b,k])=>k==='d'&&a<=start&&b>=end);if(at<0)throw Error('Conflito: '+name);const [a,b]=result[at];result.splice(at,1,...(a<start?[[a,start,'d']]:[]),[start,end,key],...(end<b?[[end,b,'d']]:[]));});
+ return [name,result];
+});
+
+const time=v=>{const m=Math.round(v*60);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+const duration=v=>{const m=Math.round(v*60);return Math.floor(m/60)+'h'+(m%60?String(m%60).padStart(2,'0'):'')};
+const percent=(v,base=24)=>(v/base*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+const $=id=>document.getElementById(id);
+for(let t=0;t<=24;t++){const tick=document.createElement('span');tick.className='tick';tick.style.bottom=t/24*100+'%';tick.textContent=t;$('axis').append(tick)}
+function render(){
+const isProposal=$('mode').value==='proposal',active=isProposal?proposed:week;
+$('days').replaceChildren();$('legend').replaceChildren();$('totals').replaceChildren();
+const used=new Set(active.flatMap(d=>d[1].map(b=>b[2])));
+for(const [key,[name,color]] of Object.entries(cat)){if(!used.has(key))continue;const label=document.createElement('span');label.textContent=key==='p'?'Almoço / preparo':name;label.style.setProperty('--c',color);$('legend').append(label)}
+let dispersed=0,sleep=0;
+for(let t=0;t<=24;t++){const line=document.createElement('div');line.className='hour-line';line.style.bottom=t/24*100+'%';line.setAttribute('aria-hidden','true');$('days').append(line)}
+active.forEach(([name,blocks])=>{
+const day=document.createElement('div');day.className='day';const label=document.createElement('div');label.className='name';label.textContent=name;day.append(label);const totals={};
+blocks.forEach(([start,end,key])=>{
+const size=end-start;totals[key]=(totals[key]||0)+size;if(key==='d')dispersed+=size;if(key==='s')sleep+=size;
+const b=document.createElement('button');b.type='button';b.className='block';b.style.bottom=`calc(${start/24*100}% + 1px)`;b.style.height=`max(2px, calc(${size/24*100}% - 2px))`;b.style.setProperty('--c',cat[key][1]);
+const description=`${name} · ${cat[key][0]} · ${time(start)}–${time(end)} · ${duration(size)} · ${percent(size)} do dia`;
+b.title=description;b.setAttribute('aria-label',description);b.onclick=()=>{$('info').textContent=description};
+if(size>=1.2){const title=document.createElement('span');title.textContent=cat[key][2];const value=document.createElement('span');value.textContent=percent(size);b.append(title,value)}day.append(b);
+});$('days').append(day);
+for(const [key,size] of Object.entries(totals)){const tr=document.createElement('tr');for(const text of [name,cat[key][0],duration(size),percent(size)]){const td=document.createElement('td');td.textContent=text;tr.append(td)}$('totals').append(tr)}
+});
+$('stats').textContent=`Dispersão: ${duration(dispersed)}/semana · ${percent(dispersed,168)} das 168h · ${percent(dispersed,168-sleep)} do tempo acordado`;
+$('info').textContent=isProposal?'Proposta: estudo 9h–10h (seg–sáb), movimento 10h15–10h45 (seg–sex) e leitura diária. Toque nos blocos para ver os detalhes.':'Rotina atual aproximada. Toque nos blocos para conferir horários, duração e porcentagem.';
+}
+$('mode').onchange=render;$('details').onclick=()=>$('summary').showModal();$('close').onclick=()=>$('summary').close();render();
+})();
+</script></body></html>
